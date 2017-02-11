@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
+		xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+		xmlns:local="clr-namespace:PlantIO" x:Class="PlantIO.PlantIOPage">
+	<StackLayout>
+		<Label Text="Welcome to PlantIO!" VerticalOptions="Center" HorizontalOptions="Center" />
+		<Button Text="Click Me!" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" Clicked="OnButtonClicked" />	
+		<Label x:Name="devName" Text="Device Name:" VerticalOptions="Center" HorizontalOptions="Center" />
+
+	</StackLayout>
+
+	<!--<StackLayout Padding="10,10,10,10" BackgroundColor="White">
+	  <Button x:Name="btn_scan_device" BorderColor="Black" Text="Scan" TextColor="Green" TranslationY="150" WidthRequest="60" HeightRequest="50" Clicked="ButtonScan"/>
+	  <StackLayout x:Name="sl_deviceList">
+	    <ListView x:Name="lv_deviceList">
+	      <Label x:Name="lbl_deviceList" />
+	    </ListView>
+	  </StackLayout>
+	</StackLayout>-->
+
+	
+</ContentPage>
