@@ -2,11 +2,17 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
 		xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
 		xmlns:local="clr-namespace:PlantIO" x:Class="PlantIO.PlantIOPage">
+	
 	<StackLayout>
 		<Label Text="Welcome to PlantIO!" VerticalOptions="Center" HorizontalOptions="Center" />
-		<Button Text="Click Me!" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" Clicked="OnButtonClicked" />	
-		<Label x:Name="devName" Text="Device Name:" VerticalOptions="Center" HorizontalOptions="Center" />
+		<Button Text="Scan Devices" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" Clicked="OnButtonClicked" />	
+		
+		<Picker x:Name="blePicker" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" Title="Select BLE device" />
 
+		<Button Text="Connect" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" Clicked="OnButtonClickedConnect" />	
+
+		
+		<Label x:Name="devName" Text="Device Name:" VerticalOptions="Center" HorizontalOptions="Center" />
 	</StackLayout>
 
 	<!--<StackLayout Padding="10,10,10,10" BackgroundColor="White">
