@@ -25,32 +25,46 @@ namespace PlantIO
 		{
 			InitializeComponent();
 
-			blePicker.SelectedIndexChanged += (sender, args) =>
+
+			blePicker.SelectedIndexChanged += async(sender, args) =>
 			{
 				if (blePicker.SelectedIndex == -1)
 				{
-					devName.Text = "no Device selected";
+					devName.Text = "No Device selected";
 					selectedDevice = null;
 				}
 				else
 				{
 					string bleDevName = blePicker.Items[blePicker.SelectedIndex];
 					selectedDevice = _bleDevices[blePicker.SelectedIndex];
-					devName.Text = bleDevName;
+					await _bleAdapter.StopScanningForDevicesAsync();
+
+					try
+					{
+						await _bleAdapter.ConnectToDeviceAsync(selectedDevice);
+						await DisplayAlert("Connected", "Connected", "OK");
+						devName.Text = "Device Name: " + selectedDevice.Name;
+						devState.Text = "Device state: " + selectedDevice.State.ToString();
+
+					}
+					catch (DeviceConnectionException element)
+					{
+						await DisplayAlert("failed", element.Message, "OK");
+					}
 				}
 			};
 
 			_bleAdapter.DeviceDiscovered += bleDiscovered;
+			_bleAdapter.StartScanningForDevicesAsync();
 
 		}
 
-
-		public async void bleDiscovered(object sender, DeviceEventArgs e)
+		public void bleDiscovered(object sender, DeviceEventArgs e)
 		{
 			currDevice = e.Device;
 			//Grep the first device only.  
-			if (_bleAdapter.IsScanning)
-				await _bleAdapter.StopScanningForDevicesAsync();
+			//if (_bleAdapter.IsScanning)
+			//	await _bleAdapter.StopScanningForDevicesAsync();
 			
 			if (!_bleDevices.Any(dev => dev.Id == currDevice.Id))
 			{
@@ -72,16 +86,24 @@ namespace PlantIO
 		}
 
 
-		async void OnButtonClickedConnect(object sender, EventArgs e)
+		async void OnButtonClickedUpdate(object sender, EventArgs e)
 		{
-
+			var service = await selectedDevice.GetServiceAsync(Guid.Parse("F0001130-0451-4000-B000-000000000000"));
 			try
 			{
-				await _bleAdapter.ConnectToDeviceAsync(selectedDevice);
-				await DisplayAlert("Connected", "Connected", "OK");
+				var characteristic = await service.GetCharacteristicAsync(Guid.Parse("F0001131-0451-4000-B000-000000000000"));
 
+				int rate = Convert.ToInt32(sampleRate.Text);
+				byte[] intBytes = BitConverter.GetBytes(rate);
+
+				if (BitConverter.IsLittleEndian)
+					Array.Reverse(intBytes);
+				byte[] result = intBytes;
+
+				await characteristic.WriteAsync(result);
 			}
-			catch (DeviceConnectionException element)
+
+			catch (Exception element)
 			{
 				await DisplayAlert("failed", element.Message, "OK");
 			}

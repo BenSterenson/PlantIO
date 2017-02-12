@@ -2,44 +2,55 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
 		xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
 		xmlns:local="clr-namespace:PlantIO" x:Class="PlantIO.PlantIOPage">
-	
-	<StackLayout>
-		<Label Text="Welcome to PlantIO!" VerticalOptions="Center" HorizontalOptions="Center" />
-		<Button Text="Scan Devices" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" Clicked="OnButtonClicked" />	
-		<Picker x:Name="blePicker" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" Title="Select BLE device" />
 
-		<StackLayout Padding="10,10,10,10" Orientation="Horizontal" HorizontalOptions="FillAndExpand" >
-			<Label Text="Sample Rate: " WidthRequest="150"/>
-			<Entry x:Name="sampleRate" Placeholder="Sample Rate" HorizontalTextAlignment="Center" />
-			<Picker x:Name="sampleRatePicker" >
-				<Picker.Items>
-	            	<x:String>Minutes</x:String> 
-	            	<x:String>Hours</x:String>
-					<x:String>Days</x:String>
-	        	</Picker.Items>
-				<Picker.SelectedIndex>0</Picker.SelectedIndex>
-    		</Picker> 
+	
+	<StackLayout Padding="10,10,10,10" >
+		
+		<StackLayout Padding="10,10,10,10" >
+			<Label Text="Welcome to PlantIO!" FontSize="Large" VerticalOptions="Center" HorizontalOptions="Center" />
 		</StackLayout>
 
-		
-		<Button Text="Connect" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" Clicked="OnButtonClickedConnect" />	
-		<Label x:Name="devName" Text="Device Name:" VerticalOptions="Center" HorizontalOptions="Center" />
+		<StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" >
+			<Picker x:Name="blePicker" Title="Select BLE device" />
+			<Button x:Name="refresh" Text="Refresh" Clicked="OnButtonClicked" />
+		</StackLayout>
+
+		<StackLayout >
+			<StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" >
+				<Label Text="Sample Rate: " WidthRequest="160"/>
+				<Entry x:Name="sampleRate" Keyboard="Numeric" Placeholder="Sample Rate" HorizontalTextAlignment="Center" />
+				<Picker x:Name="sampleRatePicker" >
+					<Picker.Items>
+		            	<x:String>Minutes</x:String> 
+		            	<x:String>Hours</x:String>
+						<x:String>Days</x:String>
+		        	</Picker.Items>
+					<Picker.SelectedIndex>0</Picker.SelectedIndex>
+	    		</Picker> 
+			</StackLayout>
+
+			<Button Text="Update" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" Clicked="OnButtonClickedUpdate" />	
+		</StackLayout>
 
 
-		<StackLayout Padding="10,10,10,10" >
+		<StackLayout >
 			<Label Text="Board Data" TextColor="Gray" FontSize="Large" />
+
+			<Label x:Name="devName" Text="Device Name:" />
+			<Label x:Name="devState" Text="Device State:" />
+
 
 			<StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" >
 				<Label Text="Soil Moisture Sensor: " />
-				<Entry x:Name="sm_sensor" Placeholder="0" HorizontalTextAlignment="Center" />
+				<Entry x:Name="sm_sensor" Placeholder="0" HorizontalTextAlignment="Center" IsEnabled="false" />
     		</StackLayout>
 			
 			<StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" >
 				<Label Text="Light Sensor: " />
-				<Entry x:Name="light_sensor" Placeholder="0" HorizontalTextAlignment="Center" />
+				<Entry x:Name="light_sensor" Placeholder="0" HorizontalTextAlignment="Center" IsEnabled="false" />
     		</StackLayout>
 				
-			<StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" >
+			<StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" IsEnabled="false" >
 				<Label Text="Temp : "/>
 				<Entry x:Name="temp_sensor" Placeholder="0" HorizontalTextAlignment="Center" />
     		</StackLayout>

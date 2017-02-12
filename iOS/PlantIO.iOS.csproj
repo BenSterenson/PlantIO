@@ -121,6 +121,13 @@
   <ItemGroup>
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json" />
     <ImageAsset Include="Assets.xcassets\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\plantIO.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\plantIO-29_29.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\plantIO-58_58.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\plantIO-72_72.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\plantIO-144_144.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\plantIO-152_152.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\plantIO-76_76.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
