@@ -88,9 +88,9 @@ namespace PlantIO
 
 		async void OnButtonClickedUpdate(object sender, EventArgs e)
 		{
-			var service = await selectedDevice.GetServiceAsync(Guid.Parse("F0001130-0451-4000-B000-000000000000"));
 			try
 			{
+				var service = await selectedDevice.GetServiceAsync(Guid.Parse("F0001130-0451-4000-B000-000000000000"));
 				var characteristic = await service.GetCharacteristicAsync(Guid.Parse("F0001131-0451-4000-B000-000000000000"));
 
 				int rate = Convert.ToInt32(sampleRate.Text);
@@ -107,6 +107,12 @@ namespace PlantIO
 			{
 				await DisplayAlert("failed", element.Message, "OK");
 			}
+		}
+
+		async void OnButtonClickedStart(object sender, EventArgs e)
+		{
+			//post to restapi
+			return;
 		}
 
 	}
