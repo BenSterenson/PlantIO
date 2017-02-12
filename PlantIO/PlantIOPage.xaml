@@ -10,14 +10,14 @@
 			<Label Text="Welcome to PlantIO!" FontSize="Large" VerticalOptions="Center" HorizontalOptions="Center" />
 		</StackLayout>
 
-		<StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" >
+		<StackLayout Orientation="Horizontal" HorizontalOptions="Center" >
 			<Picker x:Name="blePicker" Title="Select BLE device" />
 			<Button x:Name="refresh" Text="Refresh" Clicked="OnButtonClicked" />
 		</StackLayout>
 
-		<StackLayout >
-			<StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" >
-				<Label Text="Sample Rate: " WidthRequest="160"/>
+		<StackLayout HorizontalOptions="Center" >
+			<StackLayout Orientation="Horizontal" >
+				<Label Text="Sample Rate: " WidthRequest="170"/>
 				<Entry x:Name="sampleRate" Keyboard="Numeric" Placeholder="Sample Rate" HorizontalTextAlignment="Center" />
 				<Picker x:Name="sampleRatePicker" >
 					<Picker.Items>
@@ -29,7 +29,7 @@
 	    		</Picker> 
 			</StackLayout>
 
-			<Button Text="Update" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" Clicked="OnButtonClickedUpdate" />	
+			<Button Text="Update" VerticalOptions="CenterAndExpand" Clicked="OnButtonClickedUpdate" />	
 		</StackLayout>
 
 
