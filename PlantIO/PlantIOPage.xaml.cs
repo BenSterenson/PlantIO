@@ -18,6 +18,8 @@ namespace PlantIO
 		public IBluetoothLE _bluetooth = CrossBluetoothLE.Current;
 		public IAdapter _bleAdapter = CrossBluetoothLE.Current.Adapter;
 		public ObservableCollection<IDevice> _bleDevices = new ObservableCollection<IDevice> {};
+		public IDevice selectedDevice;
+
 
 		public PlantIOPage()
 		{
@@ -28,10 +30,12 @@ namespace PlantIO
 				if (blePicker.SelectedIndex == -1)
 				{
 					devName.Text = "no Device selected";
+					selectedDevice = null;
 				}
 				else
 				{
 					string bleDevName = blePicker.Items[blePicker.SelectedIndex];
+					selectedDevice = _bleDevices[blePicker.SelectedIndex];
 					devName.Text = bleDevName;
 				}
 			};
@@ -40,12 +44,6 @@ namespace PlantIO
 
 		}
 
-
-		//ble.StateChanged += (s, c) => {Debug.WriteLine($"The bluetooth state changed to {c.NewState}");};
-
-		//adapter.DeviceDiscovered += (s, a) =>{Debug.WriteLine($"Device found: {a.Device.Name}");};
-
-		//adapter.StartScanningForDevicesAsync();
 
 		public async void bleDiscovered(object sender, DeviceEventArgs e)
 		{
@@ -71,16 +69,22 @@ namespace PlantIO
 		public void OnButtonClicked(object sender, EventArgs e)
 		{
 			_bleAdapter.StartScanningForDevicesAsync();
-			//var mylist = adapter.DiscoveredDevices;
-			//var device = adapter.DiscoverDeviceAsync(dev => dev.Name.Equals("Project Zero"));
-			//devName.Text = device.ToString();
 		}
 
 
-		public void OnButtonClickedConnect(object sender, EventArgs e)
+		async void OnButtonClickedConnect(object sender, EventArgs e)
 		{
-			_bleAdapter.ConnectToDeviceAsync(currDevice);
 
+			try
+			{
+				await _bleAdapter.ConnectToDeviceAsync(selectedDevice);
+				await DisplayAlert("Connected", "Connected", "OK");
+
+			}
+			catch (DeviceConnectionException element)
+			{
+				await DisplayAlert("failed", element.Message, "OK");
+			}
 		}
 
 	}
