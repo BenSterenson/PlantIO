@@ -24,7 +24,7 @@ namespace PlantIO
 		public PlantIOPage()
 		{
 			InitializeComponent();
-
+            
 
 			blePicker.SelectedIndexChanged += async(sender, args) =>
 			{
@@ -62,10 +62,7 @@ namespace PlantIO
 		public void bleDiscovered(object sender, DeviceEventArgs e)
 		{
 			currDevice = e.Device;
-			//Grep the first device only.  
-			//if (_bleAdapter.IsScanning)
-			//	await _bleAdapter.StopScanningForDevicesAsync();
-			
+
 			if (!_bleDevices.Any(dev => dev.Id == currDevice.Id))
 			{
 				_bleDevices.Add(currDevice);
@@ -82,8 +79,9 @@ namespace PlantIO
 
 		public void OnButtonClicked(object sender, EventArgs e)
 		{
-			_bleAdapter.StartScanningForDevicesAsync();
-		}
+            _bleDevices.Clear();
+            _bleAdapter.StartScanningForDevicesAsync();
+        }
 
 
 		async void OnButtonClickedUpdate(object sender, EventArgs e)
@@ -93,7 +91,7 @@ namespace PlantIO
 				var service = await selectedDevice.GetServiceAsync(Guid.Parse("F0001130-0451-4000-B000-000000000000"));
 				var characteristic = await service.GetCharacteristicAsync(Guid.Parse("F0001131-0451-4000-B000-000000000000"));
 
-				int rate = Convert.ToInt32(sampleRate.Text);
+                int rate = Convert.ToInt32(sampleRate.Text);
 				byte[] intBytes = BitConverter.GetBytes(rate);
 
 				if (BitConverter.IsLittleEndian)
