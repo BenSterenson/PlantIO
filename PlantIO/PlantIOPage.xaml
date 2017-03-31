@@ -62,8 +62,10 @@
 				<Entry x:Name="temp_sensor" Placeholder="0" HorizontalTextAlignment="Center" IsEnabled="false" />
     		</StackLayout>
 
-			<Button Text="Start" VerticalOptions="CenterAndExpand" Clicked="OnButtonClickedStart" />	
+			<Button Text="Start" VerticalOptions="CenterAndExpand" Clicked="OnButtonClickedStart" />
 
+      <Label x:Name="Status" Text="Status: " />
+      
 		</StackLayout>
 
 		
