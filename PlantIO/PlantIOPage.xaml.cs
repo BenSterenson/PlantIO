@@ -148,18 +148,21 @@ namespace PlantIO
             }
         }
 
-        static async Task<string> RequestTimeAsync()
+        private static async Task<string> RequestTimeAsync()
         {
             // RestUrl = "http://devices.v1.growos.com/handshake/soilmoisture.0"}
-            PlantIOHandshake item = new PlantIOHandshake();
 
             using (var client = new HttpClient())
             {
                 var jsonString = await client.GetStringAsync(Constants.RestUrl);
                 var HR = JsonConvert.DeserializeObject<PlantIOHandshake>(jsonString);
 
+                return await ReportAsync(HR);
+                /*
                 string url_report = "http://" + HR.host + ":" + HR.port + "/" + HR.path + "/report";
 
+
+                
                 List<PlantIOData> PlantIOData_Arr = new List<PlantIOData>();
 
                 Random rnd = new Random();
@@ -198,9 +201,54 @@ namespace PlantIO
                     }
 
                     return "Failed";
-                }
+                }*/
             }
+        }
 
+
+        private static async Task<string> ReportAsync(PlantIOHandshake HR)
+        {
+            string url_report = "http://" + HR.host + ":" + HR.port + "/" + HR.path + "/report";
+
+            List<PlantIOData> PlantIOData_Arr = new List<PlantIOData>();
+
+            Random rnd = new Random();
+            _soilMoisture = rnd.Next(0, 100);
+            _light = rnd.Next(1, 100000);
+
+            PlantIOData sm_obj = new PlantIOData(new PlantIOSrc("soilmoisture.0", "soilmoisture"), "%", _soilMoisture);
+            PlantIOData light_obj = new PlantIOData(new PlantIOSrc("light.ambient.0", "light"), "lux", _light);
+            PlantIOData temp_obj = new PlantIOData(new PlantIOSrc("temp.0", "temperature"), "c", _temp);
+
+            PlantIOData_Arr.Add(sm_obj);
+            PlantIOData_Arr.Add(light_obj);
+            PlantIOData_Arr.Add(temp_obj);
+
+            var stringLigh_obj = await Task.Run(() => JsonConvert.SerializeObject(PlantIOData_Arr));
+
+            // Wrap our JSON inside a StringContent which then can be used by the HttpClient class
+            var httpContent = new StringContent(stringLigh_obj, Encoding.UTF8, "application/json");
+
+            using (var client_report = new HttpClient())
+            {
+
+                // Do the actual request and await the response
+                var httpResponse = await client_report.PostAsync(url_report, httpContent);
+
+                if (httpResponse.IsSuccessStatusCode)
+                {
+                    return "OK";
+                }
+
+                if (httpResponse.Content != null)
+                {
+                    var responseContent = await httpResponse.Content.ReadAsStringAsync();
+                    return responseContent;
+                    // From here on you could deserialize the ResponseContent back again to a concrete C# type using Json.Net
+                }
+
+                return "Failed";
+            }
         }
 
     }
