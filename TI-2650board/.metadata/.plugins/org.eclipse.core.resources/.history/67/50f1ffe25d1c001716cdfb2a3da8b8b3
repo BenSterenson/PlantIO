@@ -1,0 +1,42 @@
+################################################################################
+# Automatically-generated file. Do not edit!
+################################################################################
+
+# Add inputs and outputs from these tool invocations to the build variables 
+C_SRCS += \
+../ICallBLE/ICallBleAPI.c \
+../ICallBLE/bleUserConfig.c \
+../ICallBLE/ble_user_config.c \
+C:/ti/simplelink/ble_sdk_2_02_01_18/src/icall/app/icall_api.c 
+
+OBJS += \
+./ICallBLE/ICallBleAPI.obj \
+./ICallBLE/bleUserConfig.obj \
+./ICallBLE/ble_user_config.obj \
+./ICallBLE/icall_api.obj 
+
+C_DEPS += \
+./ICallBLE/ICallBleAPI.d \
+./ICallBLE/bleUserConfig.d \
+./ICallBLE/ble_user_config.d \
+./ICallBLE/icall_api.d 
+
+C_DEPS__QUOTED += \
+"ICallBLE\ICallBleAPI.d" \
+"ICallBLE\bleUserConfig.d" \
+"ICallBLE\ble_user_config.d" \
+"ICallBLE\icall_api.d" 
+
+OBJS__QUOTED += \
+"ICallBLE\ICallBleAPI.obj" \
+"ICallBLE\bleUserConfig.obj" \
+"ICallBLE\ble_user_config.obj" \
+"ICallBLE\icall_api.obj" 
+
+C_SRCS__QUOTED += \
+"../ICallBLE/ICallBleAPI.c" \
+"../ICallBLE/bleUserConfig.c" \
+"../ICallBLE/ble_user_config.c" \
+"C:/ti/simplelink/ble_sdk_2_02_01_18/src/icall/app/icall_api.c" 
+
+
