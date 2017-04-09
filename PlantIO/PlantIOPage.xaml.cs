@@ -5,7 +5,6 @@ using Plugin.BLE.Abstractions.Utils;
 using Plugin.BLE.Abstractions.Extensions;
 using Plugin.BLE.Abstractions.Exceptions;
 using Plugin.BLE;
-using System.Diagnostics;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -15,36 +14,35 @@ using System.Text;
 using PlantIO_RestAPI;
 using System.Threading.Tasks;
 using PlantIO.Modules;
-using System.IO;
-using System.Json;
-using System.Net;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace PlantIO
 {
 	public partial class PlantIOPage : ContentPage
-	{
+    {
 		public IDevice currDevice;
 		public IBluetoothLE _bluetooth = CrossBluetoothLE.Current;
 		public IAdapter _bleAdapter = CrossBluetoothLE.Current.Adapter;
 		public ObservableCollection<IDevice> _bleDevices = new ObservableCollection<IDevice> {};
-		public IDevice selectedDevice;
-        private bool _keepPolling = false;
+		public static IDevice selectedDevice;
+        /*private bool _keepPolling = false;
 
         private static int _light;
         private static int _soilMoisture;
         private static int _temp;
-
+        */
 
         public PlantIOPage()
 		{
 			InitializeComponent();
 
 
-            sm_sensor.Text = _soilMoisture.ToString();
+            /*sm_sensor.Text = _soilMoisture.ToString();
             light_sensor.Text = _light.ToString();
             temp_sensor.Text = _temp.ToString();
-
+            */
             blePicker.SelectedIndexChanged += async(sender, args) =>
 			{
 				if (blePicker.SelectedIndex == -1)
@@ -127,10 +125,11 @@ namespace PlantIO
 			}
 		}
 
-		void OnButtonClickedStart(object sender, EventArgs e)
+        /*async void OnButtonClickedStart(object sender, EventArgs e)
 		{
-            _keepPolling = true;
-            ContinuousWebRequest();
+           
+            //_keepPolling = true;
+            //ContinuousWebRequest();
             return;
 		}
 
@@ -138,9 +137,9 @@ namespace PlantIO
         {
             while (_keepPolling)
             {
-                Status.Text = "Status : " + await RequestTimeAsync() + ", Sent Time: " + DateTime.Now.ToString("HH:mm:ss");
-                sm_sensor.Text = _soilMoisture.ToString();
-                light_sensor.Text = _light.ToString();
+                //Status.Text = "Status : " + await RequestTimeAsync() + ", Sent Time: " + DateTime.Now.ToString("HH:mm:ss");
+                //sm_sensor.Text = _soilMoisture.ToString();
+                //light_sensor.Text = _light.ToString();
                 if (_keepPolling)
                 {
                     await Task.Delay(TimeSpan.FromSeconds(20));
@@ -158,50 +157,6 @@ namespace PlantIO
                 var HR = JsonConvert.DeserializeObject<PlantIOHandshake>(jsonString);
 
                 return await ReportAsync(HR);
-                /*
-                string url_report = "http://" + HR.host + ":" + HR.port + "/" + HR.path + "/report";
-
-
-                
-                List<PlantIOData> PlantIOData_Arr = new List<PlantIOData>();
-
-                Random rnd = new Random();
-                _soilMoisture = rnd.Next(0, 100);
-                _light = rnd.Next(1, 100000);
-
-                PlantIOData sm_obj = new PlantIOData(new PlantIOSrc("soilmoisture.0", "soilmoisture"), "%", _soilMoisture);
-                PlantIOData light_obj = new PlantIOData(new PlantIOSrc("light.ambient.0", "light"), "lux", _light);
-                PlantIOData temp_obj = new PlantIOData(new PlantIOSrc("temp.0", "temperature"), "c", _temp);
-
-                PlantIOData_Arr.Add(sm_obj);
-                PlantIOData_Arr.Add(light_obj);
-                PlantIOData_Arr.Add(temp_obj);
-
-                var stringLigh_obj = await Task.Run(() => JsonConvert.SerializeObject(PlantIOData_Arr));
-
-                // Wrap our JSON inside a StringContent which then can be used by the HttpClient class
-                var httpContent = new StringContent(stringLigh_obj, Encoding.UTF8, "application/json");
-
-                using (var client_report = new HttpClient())
-                {
-
-                    // Do the actual request and await the response
-                    var httpResponse = await client_report.PostAsync(url_report, httpContent);
-
-                    if (httpResponse.IsSuccessStatusCode)
-                    {
-                        return "OK";
-                    }
-
-                    if (httpResponse.Content != null)
-                    {
-                        var responseContent = await httpResponse.Content.ReadAsStringAsync();
-                        return responseContent;
-                        // From here on you could deserialize the ResponseContent back again to a concrete C# type using Json.Net
-                    }
-
-                    return "Failed";
-                }*/
             }
         }
 
@@ -249,8 +204,6 @@ namespace PlantIO
 
                 return "Failed";
             }
-        }
-
+        }*/
     }
-
 }

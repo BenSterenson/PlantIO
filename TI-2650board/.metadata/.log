@@ -1876,3 +1876,11 @@ java.nio.channels.ClosedByInterruptException
 	at org.eclipse.cdt.internal.ui.text.c.hover.BestMatchHover.getHoverInfo2(BestMatchHover.java:144)
 	at org.eclipse.cdt.internal.ui.text.c.hover.CEditorTextHoverProxy.getHoverInfo2(CEditorTextHoverProxy.java:84)
 	at org.eclipse.jface.text.TextViewerHoverManager$4.run(TextViewerHoverManager.java:166)
+
+!ENTRY com.ti.ccstudio.debug 1 0 2017-04-08 17:32:09.962
+!MESSAGE DS_ERROR: Cortex_M3_0: JTAG Communication Error: (Error -1170 @ 0x0) Unable to access the DAP. Reset the device, and retry the operation. If error persists, confirm configuration, power-cycle the board, and/or try more reliable JTAG settings (e.g. lower TCLK). (Emulation package 6.0.504.4) 
+
+
+!ENTRY com.ti.ccstudio.debug 1 0 2017-04-08 17:32:10.964
+!MESSAGE DS_ERROR: Cortex_M3_0: Failed to remove the debug state from the target before disconnecting.  There may still be breakpoint op-codes embedded in program memory.  It is recommended that you reset the emulator before you connect and reload your program before you continue debugging
+

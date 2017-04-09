@@ -1,10 +1,13 @@
-﻿using Xamarin.Forms;
+﻿using System.Threading.Tasks;
+using Xamarin.Forms;
 
 namespace PlantIO
 {
 	public partial class App : Application
 	{
-		public App()
+        public static Task NotificationService { get; internal set; }
+
+        public App()
 		{
 			InitializeComponent();
 
