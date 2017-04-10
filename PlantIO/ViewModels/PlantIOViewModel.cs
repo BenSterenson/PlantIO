@@ -13,8 +13,7 @@ using System.Net.Http;
 using Newtonsoft.Json;
 using PlantIO_RestAPI;
 using System.Collections.ObjectModel;
-using FreshMvvm.CRM.Models;
-
+using Xamarin.Forms;
 
 namespace PlantIO.ViewModels
 {
@@ -28,7 +27,9 @@ namespace PlantIO.ViewModels
         
         public ObservableCollection<string> Messages { get; } = new ObservableCollection<string>();
 
-        private string currentStatus;
+        Page _page;
+
+        private int readValue;
         private string status;
         private static int sm_sensor;
         private static int light_sensor;
@@ -38,16 +39,16 @@ namespace PlantIO.ViewModels
 
         private bool _keepPolling;
 
-        public string CurrentStatus
+        public int ReadValue
         {
             get
             {
-                return currentStatus;
+                return readValue;
             }
 
             set
             {
-                currentStatus = value;
+                readValue = value;
                 OnPropertyChanged();
             }
         }
@@ -124,7 +125,7 @@ namespace PlantIO.ViewModels
 
         public PlantIOViewModel()
         {
-            currentStatus = "0";
+            readValue = 0;
             sm_sensor = 0;
             light_sensor = 0;
             temp_sensor = 0;
@@ -139,20 +140,23 @@ namespace PlantIO.ViewModels
 
             if (_updatesStarted == true)
             {
-                updateButtonText = "Stop updates";
+                UpdateButtonText = "Stop updates";
                 return;
             }
-            updateButtonText = "Start updates";
+            UpdateButtonText = "Start updates";
         }
     public MvxCommand ToggleUpdatesCommand => new MvxCommand((() =>
         {
             if (_updatesStarted)
             {
                 StopUpdates();
+                _keepPolling = false;
             }
             else
             {
                 StartUpdates();
+                _keepPolling = true;
+                //ContinuousWebRequest();
             }
         }));
 
@@ -174,10 +178,7 @@ namespace PlantIO.ViewModels
             var selectedDevice = PlantIOPage.selectedDevice;
             if (selectedDevice == null)
             {
-                //var answer = await App.Current.MainPage.DisplayAlert("Error", "You are not connected to a BLE device try again",
-                //CoreMethods.DisplayAlert("Goodbye World", "", "Ok");
-
-                var answer = await App.Current.MainPage.DisplayAlert("You are not connected to a BLE device try again", "You are not connected to a BLE device try again", "Yes", "No");
+                await App.Current.MainPage.DisplayAlert("Error", "BLE device not found. Try reconnecting to device", "OK");
                 return;
             }
 
@@ -193,9 +194,6 @@ namespace PlantIO.ViewModels
                 Characteristic.ValueUpdated += CharacteristicOnValueUpdated;
                 await Characteristic.StartUpdatesAsync();
 
-                Messages.Insert(0, $"Start updates");
-
-                RaisePropertyChanged(() => UpdateButtonText);
 
             }
             catch (Exception ex)
@@ -215,10 +213,6 @@ namespace PlantIO.ViewModels
 
                 await Characteristic.StopUpdatesAsync();
                 Characteristic.ValueUpdated -= CharacteristicOnValueUpdated;
-
-                Messages.Insert(0, $"Stop updates");
-
-                RaisePropertyChanged(() => UpdateButtonText);
 
             }
             catch (Exception ex)
@@ -304,7 +298,8 @@ namespace PlantIO.ViewModels
         private void CharacteristicOnValueUpdated(object sender, CharacteristicUpdatedEventArgs characteristicUpdatedEventArgs)
         {
             Messages.Insert(0, $"Updated value: {CharacteristicValue}");
-            RaisePropertyChanged(() => CharacteristicValue);
+            
+            ReadValue = int.Parse(CharacteristicValue, System.Globalization.NumberStyles.HexNumber);
         }
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)

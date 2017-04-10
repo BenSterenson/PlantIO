@@ -17,6 +17,7 @@ using PlantIO.Modules;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using PlantIO.ViewModels;
 
 namespace PlantIO
 {
@@ -38,6 +39,7 @@ namespace PlantIO
 		{
 			InitializeComponent();
 
+              
 
             /*sm_sensor.Text = _soilMoisture.ToString();
             light_sensor.Text = _light.ToString();

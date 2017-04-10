@@ -90,7 +90,7 @@
       <Button Text="{Binding UpdateButtonText}" Command="{Binding ToggleUpdatesCommand}"> </Button>
 
       <Label Text="{Binding Status}" />
-      <Label x:Name="Statusval" Text="{Binding CurrentStatus}" />
+      <Label Text="{Binding ReadValue, StringFormat=Read Value: '{0}'}" />
 
 
     </StackLayout>
