@@ -27,15 +27,17 @@ namespace PlantIO.ViewModels
         public ObservableCollection<string> Messages { get; } = new ObservableCollection<string>();
 
         private bool _updatesStarted;
-        private bool _keepPolling;
+        //private bool _keepPolling;
 
         private int readValue;
         private string status;
+        private string api_url;
+        private string updateButtonText;
         private static int sm_sensor;
         private static int light_sensor;
         private static int temp_sensor;
-        private string updateButtonText;
         private static int id_sample;
+        private bool isValid;
         /*****************************/
         /*END VARIABLE DECELERATIONS*/
         /****************************/
@@ -121,6 +123,32 @@ namespace PlantIO.ViewModels
                 OnPropertyChanged();
             }
         }
+        public bool IsValid
+        {
+            get
+            {
+                return isValid;
+            }
+
+            set
+            {
+                isValid = value;
+                OnPropertyChanged();
+            }
+        }
+        public string Api_url
+        {
+            get
+            {
+                return api_url;
+            }
+
+            set
+            {
+                api_url = value;
+                OnPropertyChanged();
+            }
+        }
         /***********************/
         /*END BINDING FUNCTIONS*/
         /***********************/
@@ -137,6 +165,7 @@ namespace PlantIO.ViewModels
             id_sample = 1;
             status = "0";
             ChangeButtonLable(false);
+            api_url = Constants.PERFIX_REST_URL;
         }
         /********************/
         /*END VM CONSTRUCTOR*/
@@ -149,12 +178,13 @@ namespace PlantIO.ViewModels
         {
             if (_updatesStarted)
             {
-                _keepPolling = false;
+                //_keepPolling = false;
                 StopUpdates();
             }
             else
             {
-                _keepPolling = true;
+                //_keepPolling = true;
+
                 StartUpdates();
                 ContinuousWebRequest();
             }
@@ -166,8 +196,10 @@ namespace PlantIO.ViewModels
             if (_updatesStarted == true)
             {
                 UpdateButtonText = "Stop updates";
+                IsValid = false;
                 return;
             }
+            IsValid = true;
             UpdateButtonText = "Start updates";
         }
         private async void StartUpdates()
@@ -178,11 +210,12 @@ namespace PlantIO.ViewModels
                 await App.Current.MainPage.DisplayAlert("Error", "BLE device not found. Try reconnecting to device", "OK");
                 return;
             }
-
+            if (Api_url == Constants.PERFIX_REST_URL)
+                Api_url = Constants.DEFAULT_REST_URL;
+            
             try
             {
                 ChangeButtonLable(true);
-
                 var service = await selectedDevice.GetServiceAsync(Guid.Parse(Constants.SERVICE_STR));
                 Characteristic = await service.GetCharacteristicAsync(Guid.Parse(Constants.CHARACTERISRIC_STR));
 
@@ -194,7 +227,7 @@ namespace PlantIO.ViewModels
             }
             catch (Exception ex)
             {
-                _keepPolling = false;
+                //_keepPolling = false;
                 await App.Current.MainPage.DisplayAlert("Error", "Failed sensor registration. Info: " + ex.ToString(), "OK");
                 return;
             }
@@ -224,12 +257,12 @@ namespace PlantIO.ViewModels
         /********************/
         private async void ContinuousWebRequest()
         {
-            while (_keepPolling)
+            while (_updatesStarted)
             {
                 //Status = await RequestTimeAsync() + ", Sent Time: " + DateTime.Now.ToString("HH:mm:ss");
                 Status = await ReportAsyncGoogle() + ", Sent Time: " + DateTime.Now.ToString("HH:mm:ss");
 
-                if (_keepPolling)
+                if (_updatesStarted)
                 {
                     await Task.Delay(TimeSpan.FromSeconds(20));
                 }
@@ -265,7 +298,7 @@ namespace PlantIO.ViewModels
             {
 
                 // Do the actual request and await the response
-                var httpResponse = await client_report.PostAsync(Constants.REST_URL, httpContent);
+                var httpResponse = await client_report.PostAsync(Api_url, httpContent);
 
                 if (httpResponse.IsSuccessStatusCode)
                 {
