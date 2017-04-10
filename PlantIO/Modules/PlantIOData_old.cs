@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PlantIO.Modules
 {
-    class PlantIOData
+    class PlantIOData_old
     {
         [JsonProperty(PropertyName = "src")]
         public PlantIOSrc src { get; set; }
@@ -19,9 +19,9 @@ namespace PlantIO.Modules
         public int value { get; set; }
 
 
-        public PlantIOData() {}
+        public PlantIOData_old() {}
 
-        public PlantIOData(PlantIOSrc src, string scale, int value)
+        public PlantIOData_old(PlantIOSrc src, string scale, int value)
         {
             this.src = src;
             this.scale = scale;

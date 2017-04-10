@@ -35,6 +35,7 @@ namespace PlantIO.ViewModels
         private static int light_sensor;
         private static int temp_sensor;
         private string updateButtonText;
+        private static int id_sample;
         /*****************************/
         /*END VARIABLE DECELERATIONS*/
         /****************************/
@@ -133,6 +134,7 @@ namespace PlantIO.ViewModels
             sm_sensor = 0;
             light_sensor = 0;
             temp_sensor = 0;
+            id_sample = 1;
             status = "0";
             ChangeButtonLable(false);
         }
@@ -147,12 +149,14 @@ namespace PlantIO.ViewModels
         {
             if (_updatesStarted)
             {
+                _keepPolling = false;
                 StopUpdates();
             }
             else
             {
+                _keepPolling = true;
                 StartUpdates();
-                //ContinuousWebRequest();
+                ContinuousWebRequest();
             }
         }));
         private void ChangeButtonLable(bool value)
@@ -185,11 +189,12 @@ namespace PlantIO.ViewModels
                 Characteristic.ValueUpdated -= CharacteristicOnValueUpdated;
                 Characteristic.ValueUpdated += CharacteristicOnValueUpdated;
                 await Characteristic.StartUpdatesAsync();
-                _keepPolling = true;
+                
 
             }
             catch (Exception ex)
             {
+                _keepPolling = false;
                 await App.Current.MainPage.DisplayAlert("Error", "Failed sensor registration. Info: " + ex.ToString(), "OK");
                 return;
             }
@@ -199,10 +204,9 @@ namespace PlantIO.ViewModels
             try
             {
                 ChangeButtonLable(false);
-
                 await Characteristic.StopUpdatesAsync();
                 Characteristic.ValueUpdated -= CharacteristicOnValueUpdated;
-                _keepPolling = false;
+                
 
             }
             catch (Exception ex)
@@ -222,14 +226,64 @@ namespace PlantIO.ViewModels
         {
             while (_keepPolling)
             {
-                Status = await RequestTimeAsync() + ", Sent Time: " + DateTime.Now.ToString("HH:mm:ss");
+                //Status = await RequestTimeAsync() + ", Sent Time: " + DateTime.Now.ToString("HH:mm:ss");
+                Status = await ReportAsyncGoogle() + ", Sent Time: " + DateTime.Now.ToString("HH:mm:ss");
+
                 if (_keepPolling)
                 {
                     await Task.Delay(TimeSpan.FromSeconds(20));
                 }
             }
         }
-        private static async Task<string> RequestTimeAsync()
+
+        private async Task<string> ReportAsyncGoogle()
+        {
+            // RestUrl = "https://sheetsu.com/apis/v1.0/5384ce7c1dc4"}
+            List<PlantIOSample> PlantIOData_Arr = new List<PlantIOSample>();
+
+            Random rnd = new Random();
+            SM_sensor = rnd.Next(0, 100);
+            Light_sensor = rnd.Next(1, 100000);
+            Temp_sensor = rnd.Next(0, 30);
+            var timeStamp = DateTime.Now.ToString("dd/MM/yy H:mm:ss");
+
+            PlantIOSample sm_obj = new PlantIOSample(id_sample, timeStamp, "soilmoisture", "%", sm_sensor);
+            PlantIOSample light_obj = new PlantIOSample(id_sample, timeStamp, "light", "lux", light_sensor);
+            PlantIOSample temp_obj = new PlantIOSample(id_sample, timeStamp, "temperature", "c", temp_sensor);
+
+            PlantIOData_Arr.Add(sm_obj);
+            PlantIOData_Arr.Add(light_obj);
+            PlantIOData_Arr.Add(temp_obj);
+
+            PlantIORestApi RestApi_post_obj = new PlantIORestApi(PlantIOData_Arr);
+            var json_obj_str = await Task.Run(() => JsonConvert.SerializeObject(RestApi_post_obj));
+
+            // Wrap our JSON inside a StringContent which then can be used by the HttpClient class
+            var httpContent = new StringContent(json_obj_str, Encoding.UTF8, "application/json");
+
+            using (var client_report = new HttpClient())
+            {
+
+                // Do the actual request and await the response
+                var httpResponse = await client_report.PostAsync(Constants.REST_URL, httpContent);
+
+                if (httpResponse.IsSuccessStatusCode)
+                {
+                    id_sample++;
+                    return "OK";
+                }
+
+                if (httpResponse.Content != null)
+                {
+                    var responseContent = await httpResponse.Content.ReadAsStringAsync();
+                    return responseContent;
+                    // From here on you could deserialize the ResponseContent back again to a concrete C# type using Json.Net
+                }
+                return "Failed";
+            }
+        }
+
+        /*private static async Task<string> RequestTimeAsync()
         {
             // RestUrl = "http://devices.v1.growos.com/handshake/soilmoisture.0"}
 
@@ -245,15 +299,15 @@ namespace PlantIO.ViewModels
         {
             string url_report = "http://" + HR.host + ":" + HR.port + "/" + HR.path + "/report";
 
-            List<PlantIOData> PlantIOData_Arr = new List<PlantIOData>();
+            List<PlantIOData_old> PlantIOData_Arr = new List<PlantIOData_old>();
 
             Random rnd = new Random();
             sm_sensor = rnd.Next(0, 100);
             light_sensor = rnd.Next(1, 100000);
             temp_sensor = rnd.Next(0, 30);
-            PlantIOData sm_obj = new PlantIOData(new PlantIOSrc("soilmoisture.0", "soilmoisture"), "%", sm_sensor);
-            PlantIOData light_obj = new PlantIOData(new PlantIOSrc("light.ambient.0", "light"), "lux", light_sensor);
-            PlantIOData temp_obj = new PlantIOData(new PlantIOSrc("temp.0", "temperature"), "c", temp_sensor);
+            PlantIOData_old sm_obj = new PlantIOData_old(new PlantIOSrc("soilmoisture.0", "soilmoisture"), "%", sm_sensor);
+            PlantIOData_old light_obj = new PlantIOData_old(new PlantIOSrc("light.ambient.0", "light"), "lux", light_sensor);
+            PlantIOData_old temp_obj = new PlantIOData_old(new PlantIOSrc("temp.0", "temperature"), "c", temp_sensor);
 
             PlantIOData_Arr.Add(sm_obj);
             PlantIOData_Arr.Add(light_obj);
@@ -283,7 +337,7 @@ namespace PlantIO.ViewModels
                 }
                 return "Failed";
             }
-        }
+        }*/
         /************************/
         /*END REST API FUNCTIONS*/
         /************************/
