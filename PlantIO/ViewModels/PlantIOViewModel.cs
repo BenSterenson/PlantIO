@@ -1,33 +1,33 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
+using System.Net.Http;
+using System.ComponentModel;
 using System.Threading.Tasks;
-using MvvmCross.Core.ViewModels;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Runtime.CompilerServices;
 using Plugin.BLE.Abstractions.EventArgs;
 using Plugin.BLE.Abstractions.Contracts;
 using Plugin.BLE.Abstractions.Extensions;
-using System.Runtime.CompilerServices;
-using System.ComponentModel;
-using PlantIO.Modules;
-using System.Net.Http;
+using MvvmCross.Core.ViewModels;
 using Newtonsoft.Json;
+using PlantIO.Modules;
 using PlantIO_RestAPI;
-using System.Collections.ObjectModel;
-using Xamarin.Forms;
 
 namespace PlantIO.ViewModels
 {
     public class PlantIOViewModel : MvxViewModel, INotifyPropertyChanged
     {
-        private bool _updatesStarted;
+        /************************/
+        /*VARIABLE DECELERATIONS*/
+        /************************/
         public event PropertyChangedEventHandler PropertyChanged;
-
         public ICharacteristic Characteristic { get; private set; }
         public string CharacteristicValue => Characteristic?.Value.ToHexString().Replace("-", " ");
-        
         public ObservableCollection<string> Messages { get; } = new ObservableCollection<string>();
 
-        Page _page;
+        private bool _updatesStarted;
+        private bool _keepPolling;
 
         private int readValue;
         private string status;
@@ -35,24 +35,13 @@ namespace PlantIO.ViewModels
         private static int light_sensor;
         private static int temp_sensor;
         private string updateButtonText;
+        /*****************************/
+        /*END VARIABLE DECELERATIONS*/
+        /****************************/
 
-
-        private bool _keepPolling;
-
-        public int ReadValue
-        {
-            get
-            {
-                return readValue;
-            }
-
-            set
-            {
-                readValue = value;
-                OnPropertyChanged();
-            }
-        }
-
+        /*******************/
+        /*BINDING FUNCTIONS*/
+        /*******************/
         public string UpdateButtonText
         {
             get
@@ -66,7 +55,6 @@ namespace PlantIO.ViewModels
                 OnPropertyChanged();
             }
         }
-
         public string Status
         {
             get
@@ -80,7 +68,19 @@ namespace PlantIO.ViewModels
                 OnPropertyChanged();
             }
         }
+        public int ReadValue
+        {
+            get
+            {
+                return readValue;
+            }
 
+            set
+            {
+                readValue = value;
+                OnPropertyChanged();
+            }
+        }
         public int Temp_sensor
         {
             get
@@ -107,7 +107,6 @@ namespace PlantIO.ViewModels
                 OnPropertyChanged();
             }
         }
-
         public int SM_sensor
         {
             get
@@ -121,8 +120,13 @@ namespace PlantIO.ViewModels
                 OnPropertyChanged();
             }
         }
+        /***********************/
+        /*END BINDING FUNCTIONS*/
+        /***********************/
 
-
+        /****************/
+        /*VM CONSTRUCTOR*/
+        /****************/
         public PlantIOViewModel()
         {
             readValue = 0;
@@ -130,11 +134,28 @@ namespace PlantIO.ViewModels
             light_sensor = 0;
             temp_sensor = 0;
             status = "0";
-            ChangeButtonStart(false);
-
+            ChangeButtonLable(false);
         }
+        /********************/
+        /*END VM CONSTRUCTOR*/
+        /********************/
 
-        private void ChangeButtonStart(bool value)
+        /****************/
+        /*BUTTON COMMAND*/
+        /****************/
+        public MvxCommand ToggleUpdatesCommand => new MvxCommand((() =>
+        {
+            if (_updatesStarted)
+            {
+                StopUpdates();
+            }
+            else
+            {
+                StartUpdates();
+                //ContinuousWebRequest();
+            }
+        }));
+        private void ChangeButtonLable(bool value)
         {
             _updatesStarted = value;
 
@@ -145,34 +166,6 @@ namespace PlantIO.ViewModels
             }
             UpdateButtonText = "Start updates";
         }
-    public MvxCommand ToggleUpdatesCommand => new MvxCommand((() =>
-        {
-            if (_updatesStarted)
-            {
-                StopUpdates();
-                _keepPolling = false;
-            }
-            else
-            {
-                StartUpdates();
-                _keepPolling = true;
-                //ContinuousWebRequest();
-            }
-        }));
-
-        public MvxCommand OnButtonClickedStart => new MvxCommand((() =>
-        {
-            Random rnd = new Random();
-            SM_sensor = rnd.Next(0, 100);
-            Light_sensor = rnd.Next(1, 100000);
-            Temp_sensor = rnd.Next(0, 30);
-
-            _keepPolling = true;
-            //ContinuousWebRequest();
-        }));
-
-        
-
         private async void StartUpdates()
         {
             var selectedDevice = PlantIOPage.selectedDevice;
@@ -184,44 +177,47 @@ namespace PlantIO.ViewModels
 
             try
             {
-                ChangeButtonStart(true);
+                ChangeButtonLable(true);
 
-                var service = await selectedDevice.GetServiceAsync(Guid.Parse("0000BA55-0000-1000-8000-00805F9B34FB"));
-                Characteristic = await service.GetCharacteristicAsync(Guid.Parse("00002BAD-0000-1000-8000-00805F9B34FB"));
-
+                var service = await selectedDevice.GetServiceAsync(Guid.Parse(Constants.SERVICE_STR));
+                Characteristic = await service.GetCharacteristicAsync(Guid.Parse(Constants.CHARACTERISRIC_STR));
 
                 Characteristic.ValueUpdated -= CharacteristicOnValueUpdated;
                 Characteristic.ValueUpdated += CharacteristicOnValueUpdated;
                 await Characteristic.StartUpdatesAsync();
-
+                _keepPolling = true;
 
             }
             catch (Exception ex)
             {
-
-                var x = 0;
-
+                await App.Current.MainPage.DisplayAlert("Error", "Failed sensor registration. Info: " + ex.ToString(), "OK");
+                return;
             }
         }
-
-
         private async void StopUpdates()
         {
             try
             {
-                ChangeButtonStart(false);
+                ChangeButtonLable(false);
 
                 await Characteristic.StopUpdatesAsync();
                 Characteristic.ValueUpdated -= CharacteristicOnValueUpdated;
+                _keepPolling = false;
 
             }
             catch (Exception ex)
             {
-                var x = 0;
+                await App.Current.MainPage.DisplayAlert("Error", "Failed sensor registration. Info: " + ex.ToString(), "OK");
+                return;
             }
         }
+        /********************/
+        /*END BUTTON COMMAND*/
+        /********************/
 
-
+        /********************/
+        /*REST API FUNCTIONS*/
+        /********************/
         private async void ContinuousWebRequest()
         {
             while (_keepPolling)
@@ -233,21 +229,18 @@ namespace PlantIO.ViewModels
                 }
             }
         }
-
         private static async Task<string> RequestTimeAsync()
         {
             // RestUrl = "http://devices.v1.growos.com/handshake/soilmoisture.0"}
 
             using (var client = new HttpClient())
             {
-                var jsonString = await client.GetStringAsync(Constants.RestUrl);
+                var jsonString = await client.GetStringAsync(Constants.REST_URL);
                 var HR = JsonConvert.DeserializeObject<PlantIOHandshake>(jsonString);
 
                 return await ReportAsync(HR);
             }
         }
-
-
         private static async Task<string> ReportAsync(PlantIOHandshake HR)
         {
             string url_report = "http://" + HR.host + ":" + HR.port + "/" + HR.path + "/report";
@@ -288,23 +281,27 @@ namespace PlantIO.ViewModels
                     return responseContent;
                     // From here on you could deserialize the ResponseContent back again to a concrete C# type using Json.Net
                 }
-
                 return "Failed";
             }
         }
+        /************************/
+        /*END REST API FUNCTIONS*/
+        /************************/
 
-
-
+        /***************************/
+        /*INotifyProperty FUNCTIONS*/
+        /***************************/
         private void CharacteristicOnValueUpdated(object sender, CharacteristicUpdatedEventArgs characteristicUpdatedEventArgs)
         {
             Messages.Insert(0, $"Updated value: {CharacteristicValue}");
-            
             ReadValue = int.Parse(CharacteristicValue, System.Globalization.NumberStyles.HexNumber);
         }
-
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+        /*******************************/
+        /*END INotifyProperty FUNCTIONS*/
+        /*******************************/
     }
 }
