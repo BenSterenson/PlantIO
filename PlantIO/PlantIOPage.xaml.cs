@@ -21,7 +21,7 @@ namespace PlantIO
         public PlantIOPage()
 		{
 			InitializeComponent();
-      
+
             blePicker.SelectedIndexChanged += async(sender, args) =>
 			{
 				if (blePicker.SelectedIndex == -1)
