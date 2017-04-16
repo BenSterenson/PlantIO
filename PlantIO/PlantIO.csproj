@@ -36,8 +36,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Constants.cs" />
-    <Compile Include="Modules\PlantIOData.cs" />
-    <Compile Include="Modules\PlantIOHandshake.cs" />
+    <Compile Include="Modules\PlantIOSample.cs" />
     <Compile Include="PlantIOPage.xaml.cs">
       <DependentUpon>PlantIOPage.xaml</DependentUpon>
     </Compile>

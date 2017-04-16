@@ -12,86 +12,84 @@
 
   <StackLayout Padding="10,10,10,10" >
 		
-		<StackLayout Padding="10,10,10,10" >
-			<Label Text="Welcome to PlantIO!" FontSize="Large" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="Center" />
-		</StackLayout>
-		
-		<StackLayout>
-			<Label Text="BLE Device" TextColor="Gray" FontSize="Medium" FontAttributes="Bold" />
-			<StackLayout Orientation="Horizontal" HorizontalOptions="Center" >
-				<Picker x:Name="blePicker" Title="Select BLE device" />
-				<Button x:Name="refresh" Text="Refresh" Clicked="OnButtonClicked" />
-			</StackLayout>
-		</StackLayout>
+	<StackLayout Padding="10,10,10,10" >
+		<Label Text="Welcome to PlantIO!" FontSize="Large" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="Center" />
+	</StackLayout>
 
-		<StackLayout>
-			<Label Text="Configure Device" TextColor="Gray" FontSize="Medium" FontAttributes="Bold" />
-			
-			<StackLayout HorizontalOptions="Center" >
-				<StackLayout Orientation="Horizontal" >
-					<Label Text="Sample Rate: " />
-					<Entry x:Name="sampleRate" Keyboard="Numeric" WidthRequest="100" HorizontalTextAlignment="Center" />
-					<Picker x:Name="sampleRatePicker" >
-						<Picker.Items>
-			            	<x:String>Minutes</x:String> 
-			            	<x:String>Hours</x:String>
-							<x:String>Days</x:String>
-			        	</Picker.Items>
-						<Picker.SelectedIndex>0</Picker.SelectedIndex>
-		    		</Picker> 
-				</StackLayout>
-
-				<Button Text="Update" VerticalOptions="CenterAndExpand" Clicked="OnButtonClickedUpdate" />	
-			</StackLayout>
-		</StackLayout>
-
-
-		<StackLayout >
-			<Label Text="Board Data" TextColor="Gray" FontSize="Medium" FontAttributes="Bold" />
-
-			<Label x:Name="devName" Text="Device Name:" />
-			<Label x:Name="devState" Text="Device State:" />
-
-      <Grid>
-      <Grid.RowDefinitions>
-        <RowDefinition Height="*" />
-        <RowDefinition Height="*" />
-        <RowDefinition Height="*" />
-      </Grid.RowDefinitions>
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="Auto" />
-        <ColumnDefinition Width="Auto" />
-      </Grid.ColumnDefinitions>
-      </Grid>
-      
-      
-      
-		   <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" >
-				<Label Text="Soil Moisture Sensor: " HorizontalOptions="FillAndExpand" Grid.Row="0" Grid.Column="0" />
-         <Label Text="{Binding SM_sensor, StringFormat='{0}'}" HorizontalOptions="FillAndExpand" Grid.Row="0" Grid.Column="1" />
-         <!--<Entry x:Name="sm_sensor" HorizontalTextAlignment="Center" IsEnabled="false" Grid.Row="0" Grid.Column="1" />-->
-       </StackLayout>
-
-    <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" >
-				<Label Text="Light Sensor: " HorizontalOptions="FillAndExpand" Grid.Row="1" Grid.Column="0" />
-      <Label Text="{Binding Light_sensor, StringFormat='{0}'}" HorizontalOptions="FillAndExpand" Grid.Row="1" Grid.Column="1" />
-      <!--<Entry x:Name="light_sensor" HorizontalTextAlignment="Center" IsEnabled="false" Grid.Row="1" Grid.Column="1" />-->
+    <StackLayout>
+        <Label Text="Sheetsu API URL :" TextColor="Gray" FontSize="Medium" FontAttributes="Bold" />
+        <Entry x:Name="API_URL" HorizontalTextAlignment="Center" Text="{Binding Api_url, Mode=TwoWay}" IsEnabled="{Binding IsValid}" />
     </StackLayout>
 
-      <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" >
-				<Label Text="Temperature : " HorizontalOptions="FillAndExpand" Grid.Row="2" Grid.Column="0" />
-        <Label Text="{Binding Temp_sensor, StringFormat='{0}'}" HorizontalOptions="FillAndExpand" Grid.Row="2" Grid.Column="1" />
-				<!--<Entry x:Name="temp_sensor" HorizontalTextAlignment="Center" IsEnabled="false" Grid.Row="2" Grid.Column="1" />-->
-      </StackLayout>
+    <StackLayout>
+		<Label Text="BLE Device" TextColor="Gray" FontSize="Medium" FontAttributes="Bold" />
+		<StackLayout Orientation="Horizontal" HorizontalOptions="Center" >
+			<Picker x:Name="blePicker" Title="Select BLE device" />
+			<Button x:Name="refresh" Text="Refresh" Clicked="OnButtonClicked" />
+		</StackLayout>
+	</StackLayout>
 
-			<!--<Button Text="Start" VerticalOptions="CenterAndExpand" Clicked="OnButtonClickedStart" />-->
+    <StackLayout>
+        <Label Text="Configure Device" TextColor="Gray" FontSize="Medium" FontAttributes="Bold" />
 
-      <Button Text="Start" Command="{Binding OnButtonClickedStart}"> </Button>
-      <Button Text="{Binding UpdateButtonText}" Command="{Binding ToggleUpdatesCommand}"> </Button>
+        <StackLayout HorizontalOptions="Center" >
+            <StackLayout Orientation="Horizontal" >
+                <Label Text="Sample Rate: " />
+                <Entry x:Name="sampleRate" Keyboard="Numeric" WidthRequest="100" HorizontalTextAlignment="Center" />
+                <Picker x:Name="sampleRatePicker" >
+                    <Picker.Items>
+                        <x:String>Minutes</x:String>
+                        <x:String>Hours</x:String>
+                        <x:String>Days</x:String>
+                    </Picker.Items>
+                    <Picker.SelectedIndex>0</Picker.SelectedIndex>
+                </Picker>
+            </StackLayout>
+
+           <!-- <Button Text="Update" VerticalOptions="CenterAndExpand" Clicked="OnButtonClickedUpdate" />-->
+            <Button Text="{Binding UpdateButtonText}" Command="{Binding OnButtonClickedStart}"></Button>
+        </StackLayout>
+    </StackLayout>
+
+
+    <StackLayout >
+	    <Label Text="Board Data" TextColor="Gray" FontSize="Medium" FontAttributes="Bold" />
+
+		<Label x:Name="devName" Text="Device Name:" />
+		<Label x:Name="devState" Text="Device State:" />
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+        </Grid>
+
+
+
+            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" >
+                <Label Text="Soil Moisture Sensor: " HorizontalOptions="FillAndExpand" Grid.Row="0" Grid.Column="0" />
+                <Label Text="{Binding SM_sensor, StringFormat='{0} %'}" HorizontalOptions="FillAndExpand" Grid.Row="0" Grid.Column="1" />
+            </StackLayout>
+
+            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" >
+                <Label Text="Light Sensor: " HorizontalOptions="FillAndExpand" Grid.Row="1" Grid.Column="0" />
+                <Label Text="{Binding Light_sensor, StringFormat='{0} lux'}" HorizontalOptions="FillAndExpand" Grid.Row="1" Grid.Column="1" />
+            </StackLayout>
+
+            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" >
+                <Label Text="Temperature : " HorizontalOptions="FillAndExpand" Grid.Row="2" Grid.Column="0" />
+                <Label Text="{Binding Temp_sensor, StringFormat='{0} c'}" HorizontalOptions="FillAndExpand" Grid.Row="2" Grid.Column="1" />
+            </StackLayout>
+
+      <Button Text="{Binding UpdateButtonText}" VerticalOptions="CenterAndExpand" Command="{Binding ToggleUpdatesCommand}"> </Button>
 
       <Label Text="{Binding Status}" />
-      <Label Text="{Binding ReadValue, StringFormat=Read Value: '{0}'}" />
-
 
     </StackLayout>
 
