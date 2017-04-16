@@ -29,11 +29,12 @@ namespace PlantIO.ViewModels
         public ObservableCollection<string> Messages { get; } = new ObservableCollection<string>();
 
         private bool _updatesStarted;
+        private bool _readPeriodicStarted;
         private bool isValid;
-        private bool _keepPolling;
-
+        
         private string status;
         private string api_url;
+        private string readPeriodicButtonText;
         private string updateButtonText;
         private static int sm_sensor;
         private static int light_sensor;
@@ -82,6 +83,19 @@ namespace PlantIO.ViewModels
             set
             {
                 api_url = value;
+                OnPropertyChanged();
+            }
+        }
+        public string ReadPeriodicButtonText
+        {
+            get
+            {
+                return readPeriodicButtonText;
+            }
+
+            set
+            {
+                readPeriodicButtonText = value;
                 OnPropertyChanged();
             }
         }
@@ -156,6 +170,8 @@ namespace PlantIO.ViewModels
             temp_sensor = 0;
             id_sample = 1;
             status = "0";
+
+            ChangeReadPeriodicButton(false);
             ChangeButtonStart(false);
             api_url = Constants.PERFIX_REST_URL;
         }
@@ -167,10 +183,22 @@ namespace PlantIO.ViewModels
         /*BUTTON COMMAND*/
         /****************/
         /*Read*/
-        public MvxCommand OnButtonClickedStart => new MvxCommand((() =>
+        private void ChangeReadPeriodicButton(bool value)
         {
+            _readPeriodicStarted = value;
 
-            _keepPolling = true;
+            if (_readPeriodicStarted == true)
+            {
+                ReadPeriodicButtonText = "Stop periodic read";
+                IsValid = false;
+                return;
+            }
+            IsValid = true;
+            ReadPeriodicButtonText = "Start periodic read";
+        }
+        public MvxCommand OnButtonClickedReadPeriodic => new MvxCommand((() =>
+        {
+            _readPeriodicStarted = true;
             ContinuousWebRequest();
         }));
         private async void ReadSoilMoisture()
@@ -181,16 +209,21 @@ namespace PlantIO.ViewModels
                 await App.Current.MainPage.DisplayAlert("Error", "BLE device not found. Try reconnecting to device", "OK");
                 return;
             }
-
+            if (Api_url == Constants.PERFIX_REST_URL)
+                Api_url = Constants.DEFAULT_REST_URL;
             try
             {
-                ChangeButtonStart(true);
+                ChangeReadPeriodicButton(true);
 
                 var service = await selectedDevice.GetServiceAsync(Guid.Parse("0000BA55-0000-1000-8000-00805F9B34FB"));
                 Characteristic = await service.GetCharacteristicAsync(Guid.Parse("00002BAD-0000-1000-8000-00805F9B34FB"));
-                var data = Characteristic.Value;
-
-                SM_sensor = BitConverter.ToInt32(data, 0);
+                var data = await Characteristic.ReadAsync();
+                
+                if(data.Length > 0)
+                {
+                    var temp = BitConverter.ToString(data);
+                    SM_sensor = int.Parse(temp, System.Globalization.NumberStyles.HexNumber);
+                }
             }
             catch (Exception ex)
             {
@@ -279,10 +312,10 @@ namespace PlantIO.ViewModels
         }
         private async void ContinuousWebRequest()
         {
-            while (_keepPolling)
+            while (_readPeriodicStarted)
             {
-                Status = await ReportAsyncGoogle() + ", Sent Time: " + DateTime.Now.ToString("HH:mm:ss");
-                if (_keepPolling)
+                ReadSoilMoisture();
+                if (_readPeriodicStarted)
                 {
                     await Task.Delay(TimeSpan.FromSeconds(20));
                 }

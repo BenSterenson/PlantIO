@@ -30,7 +30,7 @@
 	</StackLayout>
 
     <StackLayout>
-        <Label Text="Configure Device" TextColor="Gray" FontSize="Medium" FontAttributes="Bold" />
+        <Label Text="Configure Periodic Read (Optional)" TextColor="Gray" FontSize="Medium" FontAttributes="Bold" />
 
         <StackLayout HorizontalOptions="Center" >
             <StackLayout Orientation="Horizontal" >
@@ -46,8 +46,7 @@
                 </Picker>
             </StackLayout>
 
-           <!-- <Button Text="Update" VerticalOptions="CenterAndExpand" Clicked="OnButtonClickedUpdate" />-->
-            <Button Text="{Binding UpdateButtonText}" Command="{Binding OnButtonClickedStart}"></Button>
+                <Button Text="{Binding ReadPeriodicButtonText}" Command="{Binding OnButtonClickedReadPeriodic}"></Button>
         </StackLayout>
     </StackLayout>
 
