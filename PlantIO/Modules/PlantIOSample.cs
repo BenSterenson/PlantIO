@@ -12,8 +12,11 @@ namespace PlantIO.Modules
         [JsonProperty(PropertyName = "id")]
         public int id { get; set; }
 
-        [JsonProperty(PropertyName = "time_stamp")]
-        public string time_stamp { get; set; }
+        [JsonProperty(PropertyName = "date")]
+        public string date { get; set; }
+
+        [JsonProperty(PropertyName = "time")]
+        public string time { get; set; }
 
         [JsonProperty(PropertyName = "type")]
         public string type { get; set; }
@@ -27,10 +30,11 @@ namespace PlantIO.Modules
 
         public PlantIOSample() { }
 
-        public PlantIOSample(int id, string time_stamp, string type, string scale, int value)
+        public PlantIOSample(int id, string date, string time, string type, string scale, int value)
         {
             this.id = id;
-            this.time_stamp = time_stamp;
+            this.date = date;
+            this.time = time;
             this.type = type;
             this.scale = scale;
             this.value = value;

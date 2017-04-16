@@ -112,7 +112,8 @@ namespace PlantIO.ViewModels
                 Random rnd = new Random();
                 Light_sensor = rnd.Next(1, 100000);
                 Temp_sensor = rnd.Next(0, 30);
-                //ContinuousWebRequest();
+                /* Send new values to RestAPI */
+                SendToRestApi();
                 OnPropertyChanged();
             }
         }
@@ -251,6 +252,10 @@ namespace PlantIO.ViewModels
         /********************/
         /*REST API FUNCTIONS*/
         /********************/
+        private async void SendToRestApi()
+        {
+            Status = await ReportAsyncGoogle() + ", Sent Time: " + DateTime.Now.ToString("HH:mm:ss");
+        }
         private async void ContinuousWebRequest()
         {
             while (_keepPolling)
@@ -267,14 +272,12 @@ namespace PlantIO.ViewModels
             // RestUrl = "https://sheetsu.com/apis/v1.0/5384ce7c1dc4"}
             List<PlantIOSample> PlantIOData_Arr = new List<PlantIOSample>();
 
-            ReadSoilMoisture();
+            var date = DateTime.Now.ToString("dd-MM-yyyy");
+            var time = DateTime.Now.ToString("HH:mm:ss");
 
-
-            var timeStamp = DateTime.Now.ToString("dd/MM/yy H:mm:ss");
-
-            PlantIOSample sm_obj = new PlantIOSample(id_sample, timeStamp, "soilmoisture", "%", sm_sensor);
-            PlantIOSample light_obj = new PlantIOSample(id_sample, timeStamp, "light", "lux", light_sensor);
-            PlantIOSample temp_obj = new PlantIOSample(id_sample, timeStamp, "temperature", "c", temp_sensor);
+            PlantIOSample sm_obj = new PlantIOSample(id_sample, date, time, "soilmoisture", "%", sm_sensor);
+            PlantIOSample light_obj = new PlantIOSample(id_sample, date, time, "light", "lux", light_sensor);
+            PlantIOSample temp_obj = new PlantIOSample(id_sample, date, time, "temperature", "c", temp_sensor);
 
             PlantIOData_Arr.Add(sm_obj);
             PlantIOData_Arr.Add(light_obj);

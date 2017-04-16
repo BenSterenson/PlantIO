@@ -89,7 +89,7 @@
 
       <Button Text="{Binding UpdateButtonText}" VerticalOptions="CenterAndExpand" Command="{Binding ToggleUpdatesCommand}"> </Button>
 
-      <Label Text="{Binding Status}" />
+      <Label Text="{Binding Status, StringFormat= 'Report Status: {0}'}" />
 
     </StackLayout>
 
