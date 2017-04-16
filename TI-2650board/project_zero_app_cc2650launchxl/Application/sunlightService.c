@@ -263,6 +263,9 @@ bStatus_t SunlightService_GetParameter( uint8 param, void *value )
   bStatus_t ret = SUCCESS;
   switch ( param )
   {
+  	  case SUNLIGHTSERVICE_SUNLIGHTVALUE:
+		memcpy(value, sunlightService_SunlightValueVal, SUNLIGHTSERVICE_SUNLIGHTVALUE_LEN);
+		break;
     default:
       ret = INVALIDPARAMETER;
       break;

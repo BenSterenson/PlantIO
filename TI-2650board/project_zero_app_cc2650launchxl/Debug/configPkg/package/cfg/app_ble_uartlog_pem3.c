@@ -1807,7 +1807,7 @@ __FAR__ const xdc_SizeT ti_sysbios_knl_Task_Module_State_terminatedQ__O = offset
  *  Define absolute path prefix for this executable's
  *  configuration generated files.
  */
-xdc__META(__ASM__, "@(#)__ASM__ = F:/PlantIO/TI-2650board/project_zero_app_cc2650launchxl/Debug/configPkg/package/cfg/app_ble_uartlog_pem3");
+xdc__META(__ASM__, "@(#)__ASM__ = C:/Users/Michael/workspace_v6_2/project_zero_app_cc2650launchxl/Debug/configPkg/package/cfg/app_ble_uartlog_pem3");
 
 /*
  *  ======== __ISA__ ========

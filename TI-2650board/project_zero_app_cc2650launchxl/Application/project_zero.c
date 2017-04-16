@@ -40,6 +40,7 @@
 #include <ti/sysbios/knl/Task.h>
 #include <ti/sysbios/knl/Semaphore.h>
 #include <ti/sysbios/knl/Queue.h>
+#include <ti/sysbios/knl/Clock.h> // SOLUTION
 
 #include <ti/drivers/PIN.h>
 #include <ti/mw/display/Display.h>
@@ -64,12 +65,12 @@
 
 #include "Board.h"
 #include "project_zero.h"
+#include "sunlightService.h" // SOLUTION
 
 // Bluetooth Developer Studio services
 #include "led_service.h"
 #include "button_service.h"
 #include "data_service.h"
-#include "sunlightService.h"
 
 
 /*********************************************************************
@@ -111,6 +112,7 @@ typedef enum
   APP_MSG_GAP_STATE_CHANGE,    /* The GAP / connection state has changed      */
   APP_MSG_BUTTON_DEBOUNCED,    /* A button has been debounced with new value  */
   APP_MSG_SEND_PASSCODE,       /* A pass-code/PIN is requested during pairing */
+  APP_MSG_PERIODIC_TIMER,      /* Periodic event*/ // SOLUTION
 } app_msg_types_t;
 
 // Struct for messages sent to the application task
@@ -146,6 +148,16 @@ typedef struct
   uint8_t  state;
 } button_state_t;
 
+// SOLUTION
+// Struct for messages from a service 
+typedef struct 
+{
+  Queue_Elem _elem;
+  uint16_t svcUUID;
+  uint16_t dataLen;
+  uint8_t paramID;
+  uint8_t data[]; // Flexible array member, extended to malloc - sizeof(.)
+} server_char_write_t;
 /*********************************************************************
  * LOCAL VARIABLES
  */
@@ -159,6 +171,10 @@ static ICall_Semaphore sem;
 // Queue object used for application messages.
 static Queue_Struct applicationMsgQ;
 static Queue_Handle hApplicationMsgQ;
+
+// Queue object used for service messages.
+static Queue_Struct serviceMsgQ;        // SOLUTION
+static Queue_Handle hServiceMsgQ;       // SOLUTION
 
 // Task configuration
 Task_Struct przTask;
@@ -231,6 +247,9 @@ PIN_Config buttonPinTable[] = {
 static Clock_Struct button0DebounceClock;
 static Clock_Struct button1DebounceClock;
 
+// Clock object for periodic event
+static Clock_Struct myClock; // SOLUTION
+
 // State of the buttons
 static uint8_t button0State = 0;
 static uint8_t button1State = 0;
@@ -290,6 +309,13 @@ static char *Util_convertArrayToHexString(uint8_t const *src, uint8_t src_len,
                                           uint8_t *dst, uint8_t dst_len);
 static char *Util_getLocalNameStr(const uint8_t *data);
 
+// Declaration of service callback handlers
+static void user_sunlightServiceValueChangeCB(uint8_t paramID); // Callback from the service. // SOLUTION
+static void user_sunlightService_ValueChangeDispatchHandler(server_char_write_t *pWrite); // Local handler called from the Task context of this task. SOLUTION
+
+// Declaration of clock callback function
+static void myClockSwiFxn(uintptr_t arg0);  // SOLUTION
+
 /*********************************************************************
  * PROFILE CALLBACKS
  */
@@ -334,6 +360,12 @@ static DataServiceCBs_t user_Data_ServiceCBs =
   .pfnCfgChangeCb = user_service_CfgChangeCB, // Noti/ind configuration callback handler
 };
 
+// Service callback function implementation // SOLUTION
+// SunlightService callback handler. The type sunlightServiceCBs_t is defined in sunlightService.h 
+static sunlightServiceCBs_t user_sunlightServiceCBs = 
+{
+  user_sunlightServiceValueChangeCB // Characteristic value change callback handler
+};
 
 /*********************************************************************
  * PUBLIC FUNCTIONS
@@ -386,7 +418,12 @@ static void ProjectZero_init(void)
   // Note: Used to transfer control to application thread from e.g. interrupts.
   Queue_construct(&applicationMsgQ, NULL);
   hApplicationMsgQ = Queue_handle(&applicationMsgQ);
-
+  
+  // Initialize queue for service messages.
+  // Note: Used to transfer control to application thread
+  Queue_construct(&serviceMsgQ, NULL);        // SOLUTION
+  hServiceMsgQ = Queue_handle(&serviceMsgQ);  // SOLUTION
+  
   // ******************************************************************
   // Hardware initialization
   // ******************************************************************
@@ -430,6 +467,15 @@ static void ProjectZero_init(void)
                   50 * (1000/Clock_tickPeriod),
                   &clockParams);
 
+  // Periodic Event
+  // Set a period, so it times out periodically without jitter
+  clockParams.period = 5000 * (1000/Clock_tickPeriod), // 5000 ms, conversion from ms to clock ticks. // SOLUTION
+  // Initialize the clock object / Clock_Struct previously added globally.
+  Clock_construct(&myClock, myClockSwiFxn,
+                  0, // Initial delay before first timeout
+	              &clockParams); // SOLUTION
+				  
+				  
   // ******************************************************************
   // BLE Stack initialization
   // ******************************************************************
@@ -497,11 +543,25 @@ static void ProjectZero_init(void)
   // Set the device name characteristic in the GAP Profile
   GGS_SetParameter(GGS_DEVICE_NAME_ATT, GAP_DEVICE_NAME_LEN, attDeviceName);
 
+  // Add sunlight service
+  SunlightService_AddService();                               // SOLUTION
+  SunlightService_RegisterAppCBs(&user_sunlightServiceCBs);   // SOLUTION  
+  
+
+
+
+
+
+
+
+
+
+  SunlightService_SetParameter(SUNLIGHTSERVICE_SUNLIGHTVALUE, SUNLIGHTSERVICE_SUNLIGHTVALUE_LEN, sunlightService_SunlightValueVal);
+
   // Add services to GATT server and give ID of this task for Indication acks.
   LedService_AddService( selfEntity );
   ButtonService_AddService( selfEntity );
   DataService_AddService( selfEntity );
-  SunlightService_AddService();
 
   // Register callbacks with the generated services that
   // can generate events (writes received) to the application
@@ -516,7 +576,6 @@ static void ProjectZero_init(void)
   // Initalization of characteristics in LED_Service that can provide data.
   LedService_SetParameter(LS_LED0_ID, LS_LED0_LEN, initVal);
   LedService_SetParameter(LS_LED1_ID, LS_LED1_LEN, initVal);
-  SunlightService_SetParameter(SUNLIGHTSERVICE_SUNLIGHTVALUE, SUNLIGHTSERVICE_SUNLIGHTVALUE_LEN, sunlightService_SunlightValueVal);
 
   // Initalization of characteristics in Button_Service that can provide data.
   ButtonService_SetParameter(BS_BUTTON0_ID, BS_BUTTON0_LEN, initVal);
@@ -624,6 +683,22 @@ static void ProjectZero_taskFxn(UArg a0, UArg a1)
         // Free the received message.
         ICall_free(pMsg);
       }
+      
+	  // Process messages sent from another task or another context. // SOLUTION
+      while (!Queue_empty(hServiceMsgQ)) 
+	  {
+        server_char_write_t *pWrite = Queue_dequeue(hServiceMsgQ);
+        
+		// Process service message.
+        switch (pWrite->svcUUID) {
+          case SUNLIGHTSERVICE_SERV_UUID:
+            user_sunlightService_ValueChangeDispatchHandler(pWrite);
+		  break;
+		}
+
+          // Free the message received from the service callback.
+		  ICall_free(pWrite);
+      }	  
     }
   }
 }
@@ -699,6 +774,14 @@ static void user_processApplicationMessage(app_msg_t *pMsg)
         user_handleButtonPress(pButtonState);
       }
       break;
+	  
+	case APP_MSG_PERIODIC_TIMER: /* Message from swi about clock expires */ // SOLUTION
+      {
+        globalInt++;                                     // SOLUTION
+        // Change of characteristics values in sunlightService that are readable/writable.
+		SunlightService_SetParameter(SUNLIGHTSERVICE_SUNLIGHTVALUE, SUNLIGHTSERVICE_SUNLIGHTVALUE_LEN, &globalInt);
+      }
+      break;	  
   }
 }
 
@@ -819,10 +902,12 @@ static void user_handleButtonPress(button_state_t *pState)
       ButtonService_SetParameter(BS_BUTTON0_ID,
                                  sizeof(pState->state),
                                  &pState->state);
+      // Press lunchpad BTN 1 to start the periodic clock
+	  Clock_start(Clock_handle(&myClock));			// SOLUTION	
+	  
       globalInt++;
-      read_sensors();
+      //read_sensors();
       SunlightService_SetParameter(SUNLIGHTSERVICE_SUNLIGHTVALUE, SUNLIGHTSERVICE_SUNLIGHTVALUE_LEN, &globalInt);
-
       break;
     case Board_BUTTON1:
       ButtonService_SetParameter(BS_BUTTON1_ID,
@@ -1629,6 +1714,103 @@ static char *Util_getLocalNameStr(const uint8_t *data) {
   }
 
   return localNameStr;
+}
+
+/******************************************************************************
+ *****************************************************************************
+ *
+ *  Solution functions
+ *
+ ****************************************************************************
+ *****************************************************************************/
+
+/*
+ * @brief   Process message from sunlight service value change
+ *
+ *          These are messages not from the BLE stack, but from the
+ *          application itself.
+ *
+ *
+ * @param   pWrite - Pointer to struct with new values
+ */ 
+void user_sunlightService_ValueChangeDispatchHandler(server_char_write_t *pWrite) 
+{
+  uint32 newPeriod;
+  switch (pWrite->paramID) {
+
+    case SUNLIGHTSERVICE_SUNLIGHTVALUE:
+	  // Check if clock is active before calling Clock stop. Clock period will not be updated if the clock is active.
+      if (Clock_isActive(Clock_handle(&myClock))){
+    	Clock_stop(Clock_handle(&myClock));
+      }
+      // manipulate the data in whichever way you prefer
+      newPeriod = ((pWrite->data[0]) | (pWrite->data[1] << 8))*(10 / Clock_tickPeriod);
+      Clock_setPeriod(Clock_handle(&myClock), newPeriod);
+
+      Clock_start(Clock_handle(&myClock));
+    break;
+	}
+}
+
+/*
+ * @brief   Callback from sunlightService indicating a characteristic value change
+ *
+ *          This function asks the service what the received data was, and sends
+ *          this in a message to the user Task for processing.
+ *
+ * @param   paramID - parameter ID of the value that was changed
+ */ 
+static void user_sunlightServiceValueChangeCB(uint8_t paramID) 
+{
+  // See sunlightService.h to compare paramID with characteristic value attribute.
+  // Called in Stack Task context, so can't do processing here.
+
+  // Send message to application message queue about received data.
+  uint16_t readLen = 0; // How much to read via service API
+
+  switch (paramID) {
+    case SUNLIGHTSERVICE_SUNLIGHTVALUE:
+      readLen = SUNLIGHTSERVICE_SUNLIGHTVALUE_LEN;
+    break;
+  } 
+
+  // Allocate memory for the message.
+  // Note: The message doesn't have to contain the data itself, as that's stored in
+  //       a variable in the service. However, to prevent data loss if a new value is received
+  //       before GetParameter is called, we call GetParameter now.
+  server_char_write_t *pWrite = ICall_malloc(sizeof(server_char_write_t) + readLen);
+
+  if (pWrite != NULL) 
+  {
+    pWrite->svcUUID = SUNLIGHTSERVICE_SERV_UUID;
+    pWrite->dataLen = readLen;
+    pWrite->paramID = paramID;
+    // Get the data from the service API.
+    // Note: Fixed length is used here, but changing the GetParameter signature is not
+    //       a problem, in case variable length is needed.
+    // Note: It could be just as well to send dataLen and a pointer to the received data directly to this callback, avoiding GetParameter alltogether.
+    SunlightService_GetParameter(paramID, pWrite->data);
+
+    // Enqueue the message using pointer to queue node element.
+    Queue_enqueue(hServiceMsgQ, &pWrite->_elem);
+    // Let application know there's a message
+    Semaphore_post(sem);
+  }
+}
+
+/*
+ * @brief   Function for clock timeout
+ *
+ *          The function is called everytime the myClock object timeout.
+ *          clockParams.period controls how frequent this function is called.
+ *
+ * @param   arg0 - unused
+ */ 
+void myClockSwiFxn(uintptr_t arg0)
+{
+  // Can't call blocking TI-RTOS calls or BLE APIs from here, as it is Swi context
+  // .. Send a message to the Task that something is afoot.
+  user_enqueueRawAppMsg(APP_MSG_PERIODIC_TIMER, NULL, 0); // Not sending any data here, just a signal
 }
 
 /*********************************************************************
