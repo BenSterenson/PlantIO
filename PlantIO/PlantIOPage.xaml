@@ -15,12 +15,7 @@
 		<StackLayout Padding="10,10,10,10" >
 			<Label Text="Welcome to PlantIO!" FontSize="Large" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="Center" />
 		</StackLayout>
-
-    <StackLayout>
-      <Label Text="Sheetsu API URL :" TextColor="Gray" FontSize="Medium" FontAttributes="Bold" />
-      <Entry x:Name="API_URL" HorizontalTextAlignment="Center" Text="{Binding Api_url, Mode=TwoWay}" IsEnabled="{Binding IsValid}" />
-    </StackLayout>
-    
+		
 		<StackLayout>
 			<Label Text="BLE Device" TextColor="Gray" FontSize="Medium" FontAttributes="Bold" />
 			<StackLayout Orientation="Horizontal" HorizontalOptions="Center" >
@@ -73,23 +68,29 @@
       
 		   <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" >
 				<Label Text="Soil Moisture Sensor: " HorizontalOptions="FillAndExpand" Grid.Row="0" Grid.Column="0" />
-         <Label Text="{Binding SM_sensor, StringFormat='{0} %'}" HorizontalOptions="FillAndExpand" Grid.Row="0" Grid.Column="1" />
+         <Label Text="{Binding SM_sensor, StringFormat='{0}'}" HorizontalOptions="FillAndExpand" Grid.Row="0" Grid.Column="1" />
+         <!--<Entry x:Name="sm_sensor" HorizontalTextAlignment="Center" IsEnabled="false" Grid.Row="0" Grid.Column="1" />-->
        </StackLayout>
 
     <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" >
 				<Label Text="Light Sensor: " HorizontalOptions="FillAndExpand" Grid.Row="1" Grid.Column="0" />
-      <Label Text="{Binding Light_sensor, StringFormat='{0} lux'}" HorizontalOptions="FillAndExpand" Grid.Row="1" Grid.Column="1" />
+      <Label Text="{Binding Light_sensor, StringFormat='{0}'}" HorizontalOptions="FillAndExpand" Grid.Row="1" Grid.Column="1" />
+      <!--<Entry x:Name="light_sensor" HorizontalTextAlignment="Center" IsEnabled="false" Grid.Row="1" Grid.Column="1" />-->
     </StackLayout>
 
       <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" >
 				<Label Text="Temperature : " HorizontalOptions="FillAndExpand" Grid.Row="2" Grid.Column="0" />
-        <Label Text="{Binding Temp_sensor, StringFormat='{0} c'}" HorizontalOptions="FillAndExpand" Grid.Row="2" Grid.Column="1" />
+        <Label Text="{Binding Temp_sensor, StringFormat='{0}'}" HorizontalOptions="FillAndExpand" Grid.Row="2" Grid.Column="1" />
+				<!--<Entry x:Name="temp_sensor" HorizontalTextAlignment="Center" IsEnabled="false" Grid.Row="2" Grid.Column="1" />-->
       </StackLayout>
 
+			<!--<Button Text="Start" VerticalOptions="CenterAndExpand" Clicked="OnButtonClickedStart" />-->
+
+      <Button Text="Start" Command="{Binding OnButtonClickedStart}"> </Button>
       <Button Text="{Binding UpdateButtonText}" Command="{Binding ToggleUpdatesCommand}"> </Button>
 
       <Label Text="{Binding Status}" />
-      <Label Text="{Binding ReadValue, StringFormat=Read Value: '{0} %'}" />
+      <Label Text="{Binding ReadValue, StringFormat=Read Value: '{0}'}" />
 
 
     </StackLayout>
