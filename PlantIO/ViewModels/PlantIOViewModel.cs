@@ -23,41 +23,42 @@ namespace PlantIO.ViewModels
         /************************/
         /*VARIABLE DECELERATIONS*/
         /************************/
-        
         public new event PropertyChangedEventHandler PropertyChanged;
         public ICharacteristic Characteristic { get; private set; }
         public string CharacteristicValue => Characteristic?.Value.ToHexString().Replace("-", " ");
         public ObservableCollection<string> Messages { get; } = new ObservableCollection<string>();
 
+        private bool _updatesStarted;
+        private bool isValid;
+        private bool _keepPolling;
+
         private string status;
         private string api_url;
-
+        private string updateButtonText;
         private static int sm_sensor;
         private static int light_sensor;
         private static int temp_sensor;
         private static int id_sample;
-        private string updateButtonText;
-        private bool _updatesStarted;
-
-        private bool _keepPolling;
         /*****************************/
         /*END VARIABLE DECELERATIONS*/
         /****************************/
 
-        public string UpdateButtonText
+        /*******************/
+        /*BINDING FUNCTIONS*/
+        /*******************/
+        public bool IsValid
         {
             get
             {
-                return updateButtonText;
+                return isValid;
             }
 
             set
             {
-                updateButtonText = value;
+                isValid = value;
                 OnPropertyChanged();
             }
         }
-
         public string Status
         {
             get
@@ -71,34 +72,32 @@ namespace PlantIO.ViewModels
                 OnPropertyChanged();
             }
         }
-
-        public int Temp_sensor
+        public string Api_url
         {
             get
             {
-                return temp_sensor;
+                return api_url;
             }
 
             set
             {
-                temp_sensor = value;
+                api_url = value;
                 OnPropertyChanged();
             }
         }
-        public int Light_sensor
+        public string UpdateButtonText
         {
             get
             {
-                return light_sensor;
+                return updateButtonText;
             }
 
             set
             {
-                light_sensor = value;
+                updateButtonText = value;
                 OnPropertyChanged();
             }
         }
-
         public int SM_sensor
         {
             get
@@ -117,20 +116,39 @@ namespace PlantIO.ViewModels
                 OnPropertyChanged();
             }
         }
-        public string Api_url
+        public int Light_sensor
         {
             get
             {
-                return api_url;
+                return light_sensor;
             }
 
             set
             {
-                api_url = value;
+                light_sensor = value;
                 OnPropertyChanged();
             }
         }
+        public int Temp_sensor
+        {
+            get
+            {
+                return temp_sensor;
+            }
 
+            set
+            {
+                temp_sensor = value;
+                OnPropertyChanged();
+            }
+        }
+        /***********************/
+        /*END BINDING FUNCTIONS*/
+        /***********************/
+
+        /****************/
+        /*VM CONSTRUCTOR*/
+        /****************/
         public PlantIOViewModel()
         {
             sm_sensor = 0;
@@ -141,23 +159,13 @@ namespace PlantIO.ViewModels
             ChangeButtonStart(false);
             api_url = Constants.PERFIX_REST_URL;
         }
-
-        private void ChangeButtonStart(bool value)
-        {
-            _updatesStarted = value;
-
-            if (_updatesStarted == true)
-            {
-                UpdateButtonText = "Stop updates";
-                return;
-            }
-            UpdateButtonText = "Start updates";
-        }
+        /********************/
+        /*END VM CONSTRUCTOR*/
+        /********************/
 
         /****************/
         /*BUTTON COMMAND*/
         /****************/
-
         /*Read*/
         public MvxCommand OnButtonClickedStart => new MvxCommand((() =>
         {
@@ -192,6 +200,19 @@ namespace PlantIO.ViewModels
         }
 
         /*Notify*/
+        private void ChangeButtonStart(bool value)
+        {
+            _updatesStarted = value;
+
+            if (_updatesStarted == true)
+            {
+                UpdateButtonText = "Stop updates";
+                IsValid = false;
+                return;
+            }
+            IsValid = true;
+            UpdateButtonText = "Start updates";
+        }
         public MvxCommand ToggleUpdatesCommand => new MvxCommand((() =>
             {
                 if (_updatesStarted)
