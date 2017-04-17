@@ -28,12 +28,18 @@ namespace PlantIO
 		public IAdapter _bleAdapter = CrossBluetoothLE.Current.Adapter;
 		public ObservableCollection<IDevice> _bleDevices = new ObservableCollection<IDevice> {};
 		public static IDevice selectedDevice;
+        public static int selectedSampleRate;
 
         public PlantIOPage()
 		{
 			InitializeComponent();
 
-            blePicker.SelectedIndexChanged += async(sender, args) =>
+            this.sampleRatePicker.SelectedIndexChanged += (sender, args) =>
+            {
+                selectedSampleRate = this.sampleRatePicker.SelectedIndex;
+            };
+
+                blePicker.SelectedIndexChanged += async(sender, args) =>
 			{
 				if (blePicker.SelectedIndex == -1)
 				{

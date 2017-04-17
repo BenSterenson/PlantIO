@@ -28,6 +28,7 @@ namespace PlantIO.ViewModels
         public string CharacteristicValue => Characteristic?.Value.ToHexString().Replace("-", " ");
         public ObservableCollection<string> Messages { get; } = new ObservableCollection<string>();
 
+        enum e_sampleRate { min, hours, days };
         private bool _updatesStarted;
         private bool _readPeriodicStarted;
         private bool isValid;
@@ -40,6 +41,8 @@ namespace PlantIO.ViewModels
         private static int light_sensor;
         private static int temp_sensor;
         private static int id_sample;
+        private int sampleRate;
+        
         /*****************************/
         /*END VARIABLE DECELERATIONS*/
         /****************************/
@@ -156,6 +159,19 @@ namespace PlantIO.ViewModels
                 OnPropertyChanged();
             }
         }
+        public int SampleRate
+        {
+            get
+            {
+                return sampleRate;
+            }
+
+            set
+            {
+                sampleRate = value;
+                OnPropertyChanged();
+            }
+        }
         /***********************/
         /*END BINDING FUNCTIONS*/
         /***********************/
@@ -169,6 +185,7 @@ namespace PlantIO.ViewModels
             light_sensor = 0;
             temp_sensor = 0;
             id_sample = 1;
+            sampleRate = 5;
             status = "0";
 
             ChangeReadPeriodicButton(false);
@@ -311,6 +328,21 @@ namespace PlantIO.ViewModels
         /********************/
         /*REST API FUNCTIONS*/
         /********************/
+        
+        private int ConvertToMin(int selectedSampleRate)
+        {
+            switch (selectedSampleRate) 
+            {
+                case (int)e_sampleRate.min:
+                    return 1;
+                case (int)e_sampleRate.hours:
+                    return 60;
+                case (int)e_sampleRate.days:
+                    return 1440;
+                default:
+                    return 1;
+            }
+        }
         private async void SendToRestApi()
         {
             Status = await ReportAsyncGoogle() + ", Sent Time: " + DateTime.Now.ToString("HH:mm:ss");
@@ -323,7 +355,7 @@ namespace PlantIO.ViewModels
                 ReadSoilMoisture();
                 if (_readPeriodicStarted)
                 {
-                    await Task.Delay(TimeSpan.FromSeconds(20));
+                    await Task.Delay(TimeSpan.FromSeconds(ConvertToMin(PlantIOPage.selectedSampleRate) * sampleRate));
                 }
             }
         }

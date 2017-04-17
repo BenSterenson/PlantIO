@@ -35,7 +35,7 @@
         <StackLayout HorizontalOptions="Center" >
             <StackLayout Orientation="Horizontal" >
                 <Label Text="Sample Rate: " />
-                <Entry x:Name="sampleRate" Keyboard="Numeric" WidthRequest="100" HorizontalTextAlignment="Center" />
+                    <Entry Text="{Binding SampleRate, Mode=TwoWay}" Keyboard="Numeric" WidthRequest="100" HorizontalTextAlignment="Center" />
                 <Picker x:Name="sampleRatePicker" >
                     <Picker.Items>
                         <x:String>Minutes</x:String>
