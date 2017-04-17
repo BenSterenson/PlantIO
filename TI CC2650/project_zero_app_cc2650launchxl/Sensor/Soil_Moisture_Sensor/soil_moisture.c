@@ -73,8 +73,8 @@ void processTaskAlert_moisture(void)
 
 	//Log_info1("soil Moisture value: %d", sm_adcValue);
     //Log_info1("soil Moisture: %d %%", sm_percent);
-    extern uint8_t globalMoistureValue;
-    globalMoistureValue = sm_percent;
+    extern uint16_t globalValue;
+    globalValue = (globalValue & 0x00FF) | (sm_percent << 8);
 
 	// Acknowledge the ALERT event
 	scifAckAlertEvents();

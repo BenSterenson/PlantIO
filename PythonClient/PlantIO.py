@@ -5,6 +5,7 @@ from datetime import datetime
 from datetime import timedelta
 import matplotlib.dates as mdates
 
+
 class PlantIO():
     REST_API = 'https://sheetsu.com/apis/v1.0/5384ce7c1dc4'
     SOIL_MOISTURE = 'soilmoisture'
@@ -123,7 +124,7 @@ class PlantIO():
 if __name__ == '__main__':
     t = PlantIO()
 
-    from_date = "16-04-2017"
+    from_date = "17-04-2017"
     to_date = "17-04-2017"
 
     cur_date = t.strDateToDateTime(from_date)

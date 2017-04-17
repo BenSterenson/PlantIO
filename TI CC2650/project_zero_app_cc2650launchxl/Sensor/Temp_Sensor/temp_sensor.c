@@ -17,5 +17,8 @@ void processTaskAlert_temp(void)
     //Log_info1("Temp sensor value: %d", temp);
     //Log_info0("######################################");
 
+    extern uint16_t globalValue;
+    globalValue = (globalValue & 0xFF00) | (temp & 0x00FF);
+
 } // processTaskAlert_temp
 

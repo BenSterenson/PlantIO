@@ -202,9 +202,9 @@ static uint8_t advertData[] =
   DEFAULT_DISCOVERABLE_MODE | GAP_ADTYPE_FLAGS_BREDR_NOT_SUPPORTED,
 
   // complete name
-  13,
+  8,
   GAP_ADTYPE_LOCAL_NAME_COMPLETE,
-  'P', 'r', 'o', 'j', 'e', 'c', 't', ' ', 'Z', 'e', 'r', 'o',
+  'P', 'l', 'a', 'n', 't', 'I', 'O',
 
 };
 
@@ -259,8 +259,8 @@ static uint8_t button1State = 0;
 Display_Handle dispHandle;
 
 // global int variable
-uint16_t globalMoistureValue = 0x0000;
-uint16_t globalLastMoistureValue = 0xFFFF;
+uint16_t globalValue = 0x0000;
+uint16_t globalOldValue = 0xFFFF;
 
 /*********************************************************************
  * LOCAL FUNCTIONS
@@ -783,9 +783,9 @@ static void user_processApplicationMessage(app_msg_t *pMsg)
         // Change of characteristics values in sunlightService that are readable/writable.
         read_sensors();
 
-        if (abs(globalMoistureValue - globalLastMoistureValue) > 10) {
-        	globalLastMoistureValue = globalMoistureValue;
-        	SunlightService_SetParameter(SUNLIGHTSERVICE_SUNLIGHTVALUE, SUNLIGHTSERVICE_SUNLIGHTVALUE_LEN, &globalMoistureValue);
+        if (abs(globalValue - globalOldValue) > 10) {
+        	globalOldValue = globalValue;
+        	SunlightService_SetParameter(SUNLIGHTSERVICE_SUNLIGHTVALUE, SUNLIGHTSERVICE_SUNLIGHTVALUE_LEN, &globalValue);
         }
       }
       break;	  
@@ -917,15 +917,15 @@ static void user_handleButtonPress(button_state_t *pState)
       //globalMoistureValue++;
       read_sensors();
 
-      old_moist = (globalLastMoistureValue >> 8) & 0x00FF;
-      new_moist = (globalMoistureValue >> 8) & 0x00FF;
+      old_moist = (globalOldValue >> 8) & 0x00FF;
+      new_moist = (globalValue >> 8) & 0x00FF;
 
-      old_temp = globalLastMoistureValue & 0xFF;
-      new_temp = globalMoistureValue & 0xFF;
+      old_temp = globalOldValue & 0xFF;
+      new_temp = globalValue & 0xFF;
 
       if (abs(old_moist - new_moist) > 10 || abs(old_temp - new_temp) > 1) {
-    	  globalLastMoistureValue = globalMoistureValue;
-    	  SunlightService_SetParameter(SUNLIGHTSERVICE_SUNLIGHTVALUE, SUNLIGHTSERVICE_SUNLIGHTVALUE_LEN, &globalMoistureValue);
+    	  globalOldValue = globalValue;
+    	  SunlightService_SetParameter(SUNLIGHTSERVICE_SUNLIGHTVALUE, SUNLIGHTSERVICE_SUNLIGHTVALUE_LEN, &globalValue);
       }
       break;
     case Board_BUTTON1:

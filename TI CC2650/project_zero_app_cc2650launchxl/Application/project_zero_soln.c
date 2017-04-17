@@ -201,9 +201,9 @@ static uint8_t advertData[] =
   DEFAULT_DISCOVERABLE_MODE | GAP_ADTYPE_FLAGS_BREDR_NOT_SUPPORTED,
 
   // complete name
-  13,
+  8,
   GAP_ADTYPE_LOCAL_NAME_COMPLETE,
-  'P', 'r', 'o', 'j', 'e', 'c', 't', ' ', 'Z', 'e', 'r', 'o',
+  'P', 'l', 'a', 'n', 't', 'I', 'O',
 
 };
 
