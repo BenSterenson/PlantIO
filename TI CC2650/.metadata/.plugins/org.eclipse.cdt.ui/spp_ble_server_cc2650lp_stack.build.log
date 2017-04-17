@@ -1,0 +1,13 @@
+
+**** Build of configuration Debug for project spp_ble_server_cc2650lp_stack ****
+
+"C:\\ti\\ccsv6\\utils\\bin\\gmake" -k all 
+"c:/ti/simplelink/ble_sdk_2_02_01_18/tools/lib_search/lib_search.exe" C:/Users/Michael/Desktop/ble_examples-master/examples/cc2650lp/spp_ble_server/ccs/stack/../../iar/stack/build_config.opt "c:/ti/simplelink/ble_sdk_2_02_01_18/tools/lib_search/params_split_cc2640.xml" c:/ti/simplelink/ble_sdk_2_02_01_18/src/../blelib "C:/Users/Michael/Desktop/ble_examples-master/examples/cc2650lp/spp_ble_server/ccs/stack/../config/lib_linker.cmd"
+<<< Using Library: host_pxxx.a >>>
+<<< Using Library: cc2640_ctrl_pxxx_ext.a >>>
+<<< Using Library: cc26xx_hci_tl_none_v41_v42.a >>>
+<<< Not Modifying lib_linker.cmd. Stack configurations have not changed. >>>
+' '
+gmake[1]: Nothing to be done for 'main-build'.
+
+**** Build Finished ****

@@ -1,0 +1,51 @@
+
+**** Build of configuration FlashROM for project multi_role_stack ****
+
+"C:\\ti\\ccsv6\\utils\\bin\\gmake" -k all 
+C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Projects/tools/LibSearch/libSearch.exe C:/Users/Michael/Desktop/ble-sdk-210-extra-e4b0d9cc4b922228be599a79d666c3e261b04bba/ble-sdk-210-extra-e4b0d9cc4b922228be599a79d666c3e261b04bba/Projects/ble/multi_role/CC26xx/CCS/multi_role_stack/../../IAR/Stack/CC2640/buildConfig.opt C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Projects/tools/LibSearch/parameters.xml C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Projects/ble/Libraries/CC26xx/IAR/ C:/Users/Michael/Desktop/ble-sdk-210-extra-e4b0d9cc4b922228be599a79d666c3e261b04bba/ble-sdk-210-extra-e4b0d9cc4b922228be599a79d666c3e261b04bba/Projects/ble/multi_role/CC26xx/CCS/multi_role_stack/../../IAR/Stack/CC2640/../../Lib/CC2640Stack.a FlashROM
+makefile:217: recipe for target 'pre-build' failed
+process_begin: CreateProcess(NULL, C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Projects/tools/LibSearch/libSearch.exe C:/Users/Michael/Desktop/ble-sdk-210-extra-e4b0d9cc4b922228be599a79d666c3e261b04bba/ble-sdk-210-extra-e4b0d9cc4b922228be599a79d666c3e261b04bba/Projects/ble/multi_role/CC26xx/CCS/multi_role_stack/../../IAR/Stack/CC2640/buildConfig.opt C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Projects/tools/LibSearch/parameters.xml C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Projects/ble/Libraries/CC26xx/IAR/ C:/Users/Michael/Desktop/ble-sdk-210-extra-e4b0d9cc4b922228be599a79d666c3e261b04bba/ble-sdk-210-extra-e4b0d9cc4b922228be599a79d666c3e261b04bba/Projects/ble/multi_role/CC26xx/CCS/multi_role_stack/../../IAR/Stack/CC2640/../../Lib/CC2640Stack.a FlashROM, ...) failed.
+make (e=2): The system cannot find the file specified.
+
+gmake[1]: [pre-build] Error 2 (ignored)
+' '
+'Building file: C:/Users/Michael/Desktop/ble-sdk-210-extra-e4b0d9cc4b922228be599a79d666c3e261b04bba/ble-sdk-210-extra-e4b0d9cc4b922228be599a79d666c3e261b04bba/Projects/ble/multi_role/CC26xx/Source/Stack/OSAL_ICallBle.c'
+'Invoking: ARM Compiler'
+"C:/ti/ccsv6/tools/compiler/ti-cgt-arm_15.12.4.LTS/bin/armcl" --cmd_file="C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Projects/ble/config/buildComponents.opt" --cmd_file="C:/Users/Michael/Desktop/ble-sdk-210-extra-e4b0d9cc4b922228be599a79d666c3e261b04bba/ble-sdk-210-extra-e4b0d9cc4b922228be599a79d666c3e261b04bba/Projects/ble/multi_role/CC26xx/CCS/multi_role_stack/../../IAR/Stack/CC2640/buildConfig.opt"  -mv7M3 --code_state=16 -me -O4 --opt_for_speed=0 --include_path="C:/ti/ccsv6/tools/compiler/ti-cgt-arm_15.12.4.LTS/include" --include_path="C:/Users/Michael/Desktop/ble-sdk-210-extra-e4b0d9cc4b922228be599a79d666c3e261b04bba/ble-sdk-210-extra-e4b0d9cc4b922228be599a79d666c3e261b04bba/Projects/ble/multi_role/CC26xx/Source/Stack" --include_path="C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Projects/ble/common/cc26xx" --include_path="C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Components/hal/target/CC2650TIRTOS" --include_path="C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Components/hal/target/_common/cc26xx" --include_path="C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Components/hal/include" --include_path="C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Components/osal/include" --include_path="C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Components/services/nv/cc26xx" --include_path="C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Components/services/nv" --include_path="C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Components/services/saddr" --include_path="C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Components/icall/include" --include_path="C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Components/ble/include" --include_path="C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Components/ble/controller/CC26xx/include" --include_path="C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Components/ble/ROM" --include_path="C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Components/ble/hci" --include_path="C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Components/ble/host" --include_path="C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Components/services/aes/CC26xx" --include_path="C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Components/npi" --include_path="C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Projects/ble/common/npi/npi_np/CC26xx/Stack" --include_path="C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Projects/ble/Include" --include_path="C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Projects/ble/ICall/Include" --include_path="C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Projects/ble/Profiles/Roles" --include_path="C:/ti/tirtos_simplelink_2_13_00_06/products/cc26xxware_2_21_01_15600" --define=USE_ICALL --define=OSAL_SNV=0 --define=FLASH_ROM_BUILD --define=POWER_SAVING --define=xGATT_NO_CLIENT --define=INCLUDE_AES_DECRYPT --define=xPM_DISABLE_PWRDOWN --define=xTESTMODES --define=xTEST_BLEBOARD --define=OSAL_CBTIMER_NUM_TASKS=1 --define=xDEBUG --define=HALNODEBUG --define=xDEBUG_GPIO --define=xDEBUG_ENC --define=xDEBUG_SW_TRACE --define=NEAR_FUNC= --define=DATA= --define=CC26XXWARE --define=CC26XX --diag_warning=225 --diag_wrap=off --diag_suppress=48 --display_error_number --abi=eabi --preproc_with_compile --preproc_dependency="Startup/OSAL_ICallBle.d" --obj_directory="Startup"  "C:/Users/Michael/Desktop/ble-sdk-210-extra-e4b0d9cc4b922228be599a79d666c3e261b04bba/ble-sdk-210-extra-e4b0d9cc4b922228be599a79d666c3e261b04bba/Projects/ble/multi_role/CC26xx/Source/Stack/OSAL_ICallBle.c"
+
+>> Compilation failure
+Startup/subdir_rules.mk:21: recipe for target 'Startup/OSAL_ICallBle.obj' failed
+gmake[1]: *** No rule to make target 'C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Components/hal/common/hal_assert.c', needed by 'HAL/Common/hal_assert.obj'.
+gmake[1]: *** No rule to make target 'C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Components/hal/target/CC2650TIRTOS/hal_flash_wrapper.c', needed by 'HAL/Target/CC2650/Drivers/hal_flash_wrapper.obj'.
+gmake[1]: *** No rule to make target 'C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Components/hal/target/CC2650TIRTOS/hal_rtc_wrapper.c', needed by 'HAL/Target/CC2650/Drivers/hal_rtc_wrapper.obj'.
+gmake[1]: *** No rule to make target 'C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Components/hal/target/CC2650TIRTOS/hal_trng_wrapper.c', needed by 'HAL/Target/CC2650/Drivers/hal_trng_wrapper.obj'.
+gmake[1]: *** No rule to make target 'C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Components/hal/target/_common/cc26xx/mb_PATCH.c', needed by 'HAL/Target/CC2650/_common/mb_PATCH.obj'.
+gmake[1]: *** No rule to make target 'C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Projects/ble/ICall/Stack/bleDispatch.c', needed by 'ICallBLE/bleDispatch.obj'.
+gmake[1]: *** No rule to make target 'C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Projects/ble/common/npi/npi_np/CC26xx/Stack/npi.c', needed by 'NPI/npi.obj'.
+gmake[1]: *** No rule to make target 'C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Components/osal/common/OSAL.c', needed by 'OSAL/OSAL.obj'.
+gmake[1]: *** No rule to make target 'C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Components/osal/common/OSAL_Clock.c', needed by 'OSAL/OSAL_Clock.obj'.
+gmake[1]: *** No rule to make target 'C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Components/osal/common/OSAL_MemoryICall.c', needed by 'OSAL/OSAL_MemoryICall.obj'.
+gmake[1]: *** No rule to make target 'C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Components/osal/common/OSAL_PwrMgr.c', needed by 'OSAL/OSAL_PwrMgr.obj'.
+gmake[1]: *** No rule to make target 'C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Components/osal/common/OSAL_Timers.c', needed by 'OSAL/OSAL_Timers.obj'.
+gmake[1]: *** No rule to make target 'C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Components/osal/common/osal_bufmgr.c', needed by 'OSAL/osal_bufmgr.obj'.
+gmake[1]: *** No rule to make target 'C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Components/osal/common/osal_cbtimer.c', needed by 'OSAL/osal_cbtimer.obj'.
+gmake[1]: *** No rule to make target 'C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Components/osal/mcu/cc26xx/osal_snv_wrapper.c', needed by 'OSAL/osal_snv_wrapper.obj'.
+gmake[1]: *** No rule to make target 'C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Projects/ble/Profiles/Roles/gap.c', needed by 'PROFILES/gap.obj'.
+gmake[1]: *** No rule to make target 'C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Projects/ble/Profiles/Roles/gapbondmgr.c', needed by 'PROFILES/gapbondmgr.obj'.
+gmake[1]: *** No rule to make target 'C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Projects/ble/Profiles/GATT/gattservapp_util.c', needed by 'PROFILES/gattservapp_util.obj'.
+gmake[1]: *** No rule to make target 'C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Components/ble/ROM/CommonROM_Init.c', needed by 'Startup/CommonROM_Init.obj'.
+gmake[1]: *** No rule to make target 'C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Projects/ble/common/cc26xx/ICall_startup.c', needed by 'Startup/ICall_startup.obj'.
+>> ERROR: Cannot open command file 'C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Projects/ble/config/buildComponents.opt': No such file or directory
+"C:/Users/Michael/Desktop/ble-sdk-210-extra-e4b0d9cc4b922228be599a79d666c3e261b04bba/ble-sdk-210-extra-e4b0d9cc4b922228be599a79d666c3e261b04bba/Projects/ble/multi_role/CC26xx/Source/Stack/OSAL_ICallBle.c", line 43: fatal error #1965: cannot open source file "ICall.h"
+1 catastrophic error detected in the compilation of "C:/Users/Michael/Desktop/ble-sdk-210-extra-e4b0d9cc4b922228be599a79d666c3e261b04bba/ble-sdk-210-extra-e4b0d9cc4b922228be599a79d666c3e261b04bba/Projects/ble/multi_role/CC26xx/Source/Stack/OSAL_ICallBle.c".
+Compilation terminated.
+gmake[1]: *** [Startup/OSAL_ICallBle.obj] Error 1
+gmake[1]: *** No rule to make target 'C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Components/ble/ROM/ROM_Init.c', needed by 'Startup/ROM_Init.obj'.
+gmake[1]: *** No rule to make target 'C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Projects/ble/ICall/Stack/bleUserConfig.c', needed by 'Startup/bleUserConfig.obj'.
+gmake[1]: *** No rule to make target 'C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Projects/ble/common/cc26xx/OnBoard.c', needed by 'TOOLS/OnBoard.obj'.
+gmake[1]: *** No rule to make target 'C:/ti/simplelink/ble_cc26xx_2_01_00_44423/Projects/ble/common/cc26xx/CCS/cc26xx_ble_stack.cmd', needed by 'multi_role_stack.out'.
+gmake[1]: Target 'main-build' not remade because of errors.
+gmake: *** [all] Error 2
+makefile:186: recipe for target 'all' failed
+
+**** Build Finished ****

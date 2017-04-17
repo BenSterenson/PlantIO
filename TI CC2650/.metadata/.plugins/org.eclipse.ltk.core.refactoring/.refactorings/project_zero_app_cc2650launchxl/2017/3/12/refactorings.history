@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;project_zero_app_cc2650launchxl/Sensor&apos; to &apos;_Sensor&apos;" description="Rename resource &apos;Sensor&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="Sensor" name="_Sensor" stamp="1490462223365" updateReferences="true"/>
+</session>
