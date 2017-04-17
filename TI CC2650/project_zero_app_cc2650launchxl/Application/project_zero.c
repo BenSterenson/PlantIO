@@ -34,6 +34,7 @@
  * INCLUDES
  */
 #include <string.h>
+#include <stdlib.h>
 
 //#define xdc_runtime_Log_DISABLE_ALL 1  // Add to disable logs from this file
 
@@ -259,6 +260,7 @@ Display_Handle dispHandle;
 
 // global int variable
 uint8_t globalMoistureValue = 0;
+uint8_t globalLastMoistureValue = 0;
 
 /*********************************************************************
  * LOCAL FUNCTIONS
@@ -780,7 +782,11 @@ static void user_processApplicationMessage(app_msg_t *pMsg)
         //globalMoistureValue++;                                     // SOLUTION
         // Change of characteristics values in sunlightService that are readable/writable.
         read_sensors();
-		SunlightService_SetParameter(SUNLIGHTSERVICE_SUNLIGHTVALUE, SUNLIGHTSERVICE_SUNLIGHTVALUE_LEN, &globalMoistureValue);
+
+        if (abs(globalMoistureValue - globalLastMoistureValue) > 10) {
+        	globalLastMoistureValue = globalMoistureValue;
+        	SunlightService_SetParameter(SUNLIGHTSERVICE_SUNLIGHTVALUE, SUNLIGHTSERVICE_SUNLIGHTVALUE_LEN, &globalMoistureValue);
+        }
       }
       break;	  
   }
@@ -908,7 +914,11 @@ static void user_handleButtonPress(button_state_t *pState)
 	  
       //globalMoistureValue++;
       read_sensors();
-      SunlightService_SetParameter(SUNLIGHTSERVICE_SUNLIGHTVALUE, SUNLIGHTSERVICE_SUNLIGHTVALUE_LEN, &globalMoistureValue);
+
+      if (abs(globalMoistureValue - globalLastMoistureValue) > 10) {
+    	  globalLastMoistureValue = globalMoistureValue;
+    	  SunlightService_SetParameter(SUNLIGHTSERVICE_SUNLIGHTVALUE, SUNLIGHTSERVICE_SUNLIGHTVALUE_LEN, &globalMoistureValue);
+      }
       break;
     case Board_BUTTON1:
       ButtonService_SetParameter(BS_BUTTON1_ID,
