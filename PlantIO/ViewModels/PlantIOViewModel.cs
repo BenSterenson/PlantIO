@@ -128,7 +128,6 @@ namespace PlantIO.ViewModels
                 sm_sensor = value;
                 Random rnd = new Random();
                 Light_sensor = rnd.Next(1, 100000);
-                Temp_sensor = rnd.Next(0, 30);
                 /* Send new values to RestAPI */
                 SendToRestApi();
                 OnPropertyChanged();
@@ -237,14 +236,24 @@ namespace PlantIO.ViewModels
             {
                 ChangeReadPeriodicButton(true);
 
-                var service = await selectedDevice.GetServiceAsync(Guid.Parse("0000BA55-0000-1000-8000-00805F9B34FB"));
-                Characteristic = await service.GetCharacteristicAsync(Guid.Parse("00002BAD-0000-1000-8000-00805F9B34FB"));
+                var service = await selectedDevice.GetServiceAsync(Guid.Parse(Constants.SERVICE_STR));
+                Characteristic = await service.GetCharacteristicAsync(Guid.Parse(Constants.CHARACTERISRIC_STR));
                 var data = await Characteristic.ReadAsync();
                 
                 if(data.Length > 0)
                 {
                     var temp = BitConverter.ToString(data);
-                    SM_sensor = int.Parse(temp, System.Globalization.NumberStyles.HexNumber);
+                    var arr = temp.Split('-');
+                    try
+                    {
+                        Temp_sensor = int.Parse(arr[0], System.Globalization.NumberStyles.HexNumber);
+                        SM_sensor = int.Parse(arr[1], System.Globalization.NumberStyles.HexNumber);
+                    }
+                    catch (Exception ex)
+                    {
+                        Status = "Error parsing : " + CharacteristicValue;
+                        return;
+                    }
                 }
             }
             catch (Exception ex)
@@ -416,7 +425,18 @@ namespace PlantIO.ViewModels
         {
             Messages.Insert(0, $"Updated value: {CharacteristicValue}");
             ble_sample_type = "Notify";
-            SM_sensor = int.Parse(CharacteristicValue, System.Globalization.NumberStyles.HexNumber);
+            var arr = CharacteristicValue.Split(' ');
+            try
+            {
+                Temp_sensor = int.Parse(arr[0], System.Globalization.NumberStyles.HexNumber);
+                SM_sensor = int.Parse(arr[1], System.Globalization.NumberStyles.HexNumber);
+            }
+            catch (Exception ex)
+            {
+                Status = "Error parsing : "+ CharacteristicValue;
+                return;
+            }
+
         }
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {

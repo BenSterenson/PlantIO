@@ -69,7 +69,7 @@ namespace PlantIO
 			};
 
 			_bleAdapter.DeviceDiscovered += bleDiscovered;
-			_bleAdapter.StartScanningForDevicesAsync(dev => dev.Name.Contains("Project"));
+			_bleAdapter.StartScanningForDevicesAsync(dev => dev.Name.Contains("PlantIO"));
 
 		}
 
@@ -101,7 +101,7 @@ namespace PlantIO
                 this.blePicker.Items.Clear();
                 selectedDevice = null;
                 _bleDevices.Clear();
-                _bleAdapter.StartScanningForDevicesAsync(dev => dev.Name.Contains("Project"));
+                _bleAdapter.StartScanningForDevicesAsync(dev => dev.Name.Contains("PlantIO"));
             }
         }
 
