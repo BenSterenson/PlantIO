@@ -42,7 +42,7 @@ class PlantIO():
         return datetime.strptime(strDate, '%d-%m-%Y')
 
     def strTimeToDateTime(self, strDate):
-        return datetime.strptime(strDate, '%H:%M').time()
+        return datetime.strptime(strDate, '%H:%M:%S').time()
 
     def generate_graph(self):
         today = datetime.today().replace(hour=0, minute=0, second=0, microsecond=0)
@@ -78,7 +78,6 @@ class PlantIO():
         plt.ylabel('Moisture', size=14)
         plt.xticks([])  # hide x values
         plt.grid(True)
-        plt.
 
         temp_ax = plt.axes([base_x, base_y + base_h * 2 / 3., base_w, base_h / 3.], frameon=False)
         temp_ax.yaxis.tick_left()  # the y values are on the left
