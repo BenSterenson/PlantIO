@@ -42,7 +42,8 @@ namespace PlantIO.ViewModels
         private static int temp_sensor;
         private static int id_sample;
         private int sampleRate;
-        
+        private string ble_sample_type;
+
         /*****************************/
         /*END VARIABLE DECELERATIONS*/
         /****************************/
@@ -329,16 +330,16 @@ namespace PlantIO.ViewModels
         /*REST API FUNCTIONS*/
         /********************/
         
-        private int ConvertToMin(int selectedSampleRate)
+        private int ConvertToSec(int selectedSampleRate)
         {
             switch (selectedSampleRate) 
             {
                 case (int)e_sampleRate.min:
-                    return 1;
-                case (int)e_sampleRate.hours:
                     return 60;
+                case (int)e_sampleRate.hours:
+                    return 3600;
                 case (int)e_sampleRate.days:
-                    return 1440;
+                    return 86400;
                 default:
                     return 1;
             }
@@ -352,10 +353,11 @@ namespace PlantIO.ViewModels
             ChangeReadPeriodicButton(true);
             while (_readPeriodicStarted)
             {
+                ble_sample_type = "Read Periodic";
                 ReadSoilMoisture();
                 if (_readPeriodicStarted)
                 {
-                    await Task.Delay(TimeSpan.FromSeconds(ConvertToMin(PlantIOPage.selectedSampleRate) * sampleRate));
+                    await Task.Delay(TimeSpan.FromSeconds(ConvertToSec(PlantIOPage.selectedSampleRate) * sampleRate));
                 }
             }
         }
@@ -366,10 +368,11 @@ namespace PlantIO.ViewModels
 
             var date = DateTime.Now.ToString("dd-MM-yyyy");
             var time = DateTime.Now.ToString("HH:mm:ss");
+            var sample_type = ble_sample_type;
 
-            PlantIOSample sm_obj = new PlantIOSample(id_sample, date, time, "soilmoisture", "%", sm_sensor);
-            PlantIOSample light_obj = new PlantIOSample(id_sample, date, time, "light", "lux", light_sensor);
-            PlantIOSample temp_obj = new PlantIOSample(id_sample, date, time, "temperature", "c", temp_sensor);
+            PlantIOSample sm_obj = new PlantIOSample(id_sample, date, time, "soilmoisture", "%", sm_sensor, sample_type);
+            PlantIOSample light_obj = new PlantIOSample(id_sample, date, time, "light", "lux", light_sensor, sample_type);
+            PlantIOSample temp_obj = new PlantIOSample(id_sample, date, time, "temperature", "c", temp_sensor, sample_type);
 
             PlantIOData_Arr.Add(sm_obj);
             PlantIOData_Arr.Add(light_obj);
@@ -412,6 +415,7 @@ namespace PlantIO.ViewModels
         private void CharacteristicOnValueUpdated(object sender, CharacteristicUpdatedEventArgs characteristicUpdatedEventArgs)
         {
             Messages.Insert(0, $"Updated value: {CharacteristicValue}");
+            ble_sample_type = "Notify";
             SM_sensor = int.Parse(CharacteristicValue, System.Globalization.NumberStyles.HexNumber);
         }
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)

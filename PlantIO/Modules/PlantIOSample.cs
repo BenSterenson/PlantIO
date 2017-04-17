@@ -27,10 +27,12 @@ namespace PlantIO.Modules
         [JsonProperty(PropertyName = "value")]
         public int value { get; set; }
 
+        [JsonProperty(PropertyName = "ble_sample_type")]
+        public string ble_sample_type { get; set; }
 
         public PlantIOSample() { }
 
-        public PlantIOSample(int id, string date, string time, string type, string scale, int value)
+        public PlantIOSample(int id, string date, string time, string type, string scale, int value, string ble_sample_type)
         {
             this.id = id;
             this.date = date;
@@ -38,6 +40,7 @@ namespace PlantIO.Modules
             this.type = type;
             this.scale = scale;
             this.value = value;
+            this.ble_sample_type = ble_sample_type;
         }
 
     }
