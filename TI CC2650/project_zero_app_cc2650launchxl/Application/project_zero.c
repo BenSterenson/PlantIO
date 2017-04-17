@@ -259,8 +259,8 @@ static uint8_t button1State = 0;
 Display_Handle dispHandle;
 
 // global int variable
-uint8_t globalMoistureValue = 0;
-uint8_t globalLastMoistureValue = 0;
+uint16_t globalMoistureValue = 0x0000;
+uint16_t globalLastMoistureValue = 0xFFFF;
 
 /*********************************************************************
  * LOCAL FUNCTIONS
@@ -896,6 +896,8 @@ static void user_processGapStateChangeEvt(gaprole_States_t newState)
  */
 static void user_handleButtonPress(button_state_t *pState)
 {
+	int old_temp, new_temp, old_moist, new_moist = 0;
+
   Log_info2("%s %s",
     (IArg)(pState->pinId == Board_BUTTON0?"Button 0":"Button 1"),
     (IArg)(pState->state?"\x1b[32mpressed\x1b[0m":
@@ -915,7 +917,13 @@ static void user_handleButtonPress(button_state_t *pState)
       //globalMoistureValue++;
       read_sensors();
 
-      if (abs(globalMoistureValue - globalLastMoistureValue) > 10) {
+      old_moist = (globalLastMoistureValue >> 8) & 0x00FF;
+      new_moist = (globalMoistureValue >> 8) & 0x00FF;
+
+      old_temp = globalLastMoistureValue & 0xFF;
+      new_temp = globalMoistureValue & 0xFF;
+
+      if (abs(old_moist - new_moist) > 10 || abs(old_temp - new_temp) > 1) {
     	  globalLastMoistureValue = globalMoistureValue;
     	  SunlightService_SetParameter(SUNLIGHTSERVICE_SUNLIGHTVALUE, SUNLIGHTSERVICE_SUNLIGHTVALUE_LEN, &globalMoistureValue);
       }

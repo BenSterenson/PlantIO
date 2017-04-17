@@ -86,6 +86,7 @@ CONST uint8_t sunlightService_SunlightValueUUID[ATT_BT_UUID_SIZE] =
 
 static sunlightServiceCBs_t *pAppCBs = NULL;
 
+
 /*********************************************************************
 * Profile Attributes - variables
 */

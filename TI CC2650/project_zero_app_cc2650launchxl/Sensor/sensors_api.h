@@ -10,7 +10,7 @@
 
 //#include "../Sensor/Light_Sensor/light_sensor.h"
 #include "../Sensor/Soil_Moisture_Sensor/soil_moisture.h"
-//#include "../Sensor/Temp_Sensor/temp_sensor.h"
+#include "../Sensor/Temp_Sensor/temp_sensor.h"
 
 extern void read_sensors();
 extern void init_sensors();

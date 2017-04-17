@@ -65,7 +65,7 @@ static void Sensor_taskFxn(UArg a0, UArg a1)
 
 		processTaskAlert_moisture();
 		//processTaskAlert_light();
-		//processTaskAlert_temp();
+		processTaskAlert_temp();
 
 		//PIN_setOutputValue(ledPinHandle, Board_LED1, light_val);
 		//Log_info2("Turning %s %s",

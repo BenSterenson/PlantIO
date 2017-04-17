@@ -62,7 +62,7 @@ extern "C"
 //  Characteristic defines
 #define SUNLIGHTSERVICE_SUNLIGHTVALUE      0
 #define SUNLIGHTSERVICE_SUNLIGHTVALUE_UUID 0x2BAD
-#define SUNLIGHTSERVICE_SUNLIGHTVALUE_LEN  1
+#define SUNLIGHTSERVICE_SUNLIGHTVALUE_LEN  2
 
 /*********************************************************************
  * TYPEDEFS
