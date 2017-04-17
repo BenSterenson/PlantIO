@@ -193,13 +193,17 @@ namespace PlantIO.ViewModels
                 IsValid = false;
                 return;
             }
-            IsValid = true;
+            if(_updatesStarted == false)
+                IsValid = true;
             ReadPeriodicButtonText = "Start periodic read";
         }
         public MvxCommand OnButtonClickedReadPeriodic => new MvxCommand((() =>
         {
-            _readPeriodicStarted = true;
-            ContinuousWebRequest();
+            if (_readPeriodicStarted)
+                ChangeReadPeriodicButton(false);
+
+            else
+                ContinuousWebRequest();
         }));
         private async void ReadSoilMoisture()
         {
@@ -243,7 +247,8 @@ namespace PlantIO.ViewModels
                 IsValid = false;
                 return;
             }
-            IsValid = true;
+            if (_readPeriodicStarted == false)
+                IsValid = true;
             UpdateButtonText = "Start updates";
         }
         public MvxCommand ToggleUpdatesCommand => new MvxCommand((() =>
@@ -312,6 +317,7 @@ namespace PlantIO.ViewModels
         }
         private async void ContinuousWebRequest()
         {
+            ChangeReadPeriodicButton(true);
             while (_readPeriodicStarted)
             {
                 ReadSoilMoisture();
