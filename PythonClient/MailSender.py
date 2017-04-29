@@ -28,7 +28,7 @@ class MailSender():
         msg = MIMEMultipart()
         msg['From'] = self.user
         msg['To'] = self.To
-        msg['Subject'] = 'PlantIO warning'
+        msg['Subject'] = 'PlantIO Warning'
         body = "Water your Plant!"
         msg.attach(MIMEText(body, 'plain'))
 
