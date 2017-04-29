@@ -4,7 +4,9 @@ import matplotlib.pyplot as plt
 from datetime import datetime
 from datetime import timedelta
 import matplotlib.dates as mdates
-
+import argparse
+import time
+from MailSender import *
 
 class PlantIO():
     REST_API = 'https://sheetsu.com/apis/v1.0/5384ce7c1dc4'
@@ -22,7 +24,7 @@ class PlantIO():
         url_request = self.Rest_Api + "/date/" + date.strftime("%d-%m-%Y")
         response = requests.get(url=url_request)
         json_data = json.loads(response.text)
-        print json_data
+        #print json_data
 
         for row in json_data:
 
@@ -101,8 +103,8 @@ class PlantIO():
         m_proxy = plt.Line2D([0], [0], c='#0000FF', lw=3)
         plt.legend((t_proxy, l_proxy, m_proxy), ("Temperature", "Light", "Moisture"))
 
-        # plt.savefig("output.svg")
-        plt.show()
+        plt.savefig("output.png")
+        # plt.show(block=False)
 
     def generate_graph_day(self, day):
 
@@ -122,11 +124,20 @@ class PlantIO():
 
 
 if __name__ == '__main__':
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-f', action='store', default=time.strftime("%d-%m-%Y"), dest='from_date', help='Plot graph from date. format: "dd-mm-YYYY"')
+    parser.add_argument('-t', action='store', default=time.strftime("%d-%m-%Y"), dest='to_date', help='Plot graph to date. format: "dd-mm-YYYY"')
+    parser.add_argument('-c', action='store', default='../../Credentials.txt', dest='credentials_path', help='Path to credentials, text file containing gmail user name, password. Format: "user:password"')
+    parser.add_argument('-to', action='store', default='hydrapptau@gmail.com', dest='to', help='Send notify Email to. Format: "user:password"')
+
+    results = parser.parse_args()
+    from_date = results.from_date
+    to_date = results.to_date
+    credentials_path = results.credentials_path
+    to = results.to
+
     t = PlantIO()
-
-    from_date = "17-04-2017"
-    to_date = "17-04-2017"
-
     cur_date = t.strDateToDateTime(from_date)
     end_date = t.strDateToDateTime(to_date)
     while cur_date <= end_date:
@@ -134,3 +145,5 @@ if __name__ == '__main__':
         cur_date += timedelta(days=1)
     t.generate_graph()
 
+    MailSender(credentials_path=credentials_path, to=to)
+    #plt.show()
